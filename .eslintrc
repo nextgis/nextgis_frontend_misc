@@ -1,0 +1,8 @@
+{
+  "extends": [
+    "@nextgis/eslint-config"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off"
+  }
+}
