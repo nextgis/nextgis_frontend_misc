@@ -67,7 +67,7 @@ export default class GeomInput extends Vue {
     return this.localGeom;
   }
 
-  beforeMounted() {
+  mounted() {
     this.localGeom = this.geom;
     this.mapOptionsLocale = deepmerge(MAP_OPTIONS, this.mapOptions);
   }
