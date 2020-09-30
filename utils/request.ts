@@ -19,7 +19,15 @@ export function request<T = any>(
           reject('Server error');
         }
       } else {
-        resolve(xhr.response ? JSON.parse(xhr.response) : '');
+        let resp = xhr.response;
+        if (xhr.response) {
+          try {
+            resp = JSON.parse(resp);
+          } catch {
+            //
+          }
+        }
+        resolve(resp);
       }
     };
     xhr.onerror = (er) => {
