@@ -51,8 +51,9 @@ export default class GeomInput extends Vue {
   @Prop({ default: '' }) readonly height!: string;
 
   @Prop({ default: () => MAP_OPTIONS }) readonly mapOptions!: MapOptions;
+  @Prop() readonly zoom!: number;
 
-  mapOptionsLocale = MAP_OPTIONS;
+  mapOptionsLocale: MapOptions | null = null;
   localGeom: Feature<MultiPolygon> | null = null;
 
   @Watch('geom')
@@ -69,6 +70,9 @@ export default class GeomInput extends Vue {
 
   mounted() {
     this.localGeom = this.geom;
-    this.mapOptionsLocale = deepmerge(MAP_OPTIONS, this.mapOptions);
+    this.mapOptionsLocale = {
+      ...deepmerge(MAP_OPTIONS, this.mapOptions),
+      ...this.$props,
+    };
   }
 }

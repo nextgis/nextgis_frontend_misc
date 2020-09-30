@@ -18,7 +18,13 @@
     @click:append="appendIconCallback"
     @click:prepend="prependIconCallback"
   >
-    <VueNgwLeafletEditable v-model="localGeom" :mapOptions="mapOptionsLocale" full-filling class="map">
+    <VueNgwLeafletEditable
+      v-if="mapOptionsLocale"
+      v-model="localGeom"
+      :mapOptions="mapOptionsLocale"
+      full-filling
+      class="map"
+    >
       <slot name="map"></slot>
     </VueNgwLeafletEditable>
   </v-input>
