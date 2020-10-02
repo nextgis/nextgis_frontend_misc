@@ -75,6 +75,9 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     this.ngwMap.onLoad().then((ngwMap) => {
       this.localGeom = this.geom;
       this.map = ngwMap.mapAdapter.map || null;
+      if (this.localGeom) {
+        this.onGeom();
+      }
     });
   }
 
