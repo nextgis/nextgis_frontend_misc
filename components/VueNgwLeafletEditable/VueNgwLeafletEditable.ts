@@ -172,7 +172,7 @@ export default class GeomInput extends Mixins(VueNgwMap) {
   showRemoveControl() {
     const ngwMap = this.ngwMap;
     this.destroyRemoveControl();
-    if (ngwMap && this.removeControl) {
+    if (ngwMap && this.removeControl && this.enabled) {
       ngwMap.addControl(this.removeControl, 'top-right');
     }
   }

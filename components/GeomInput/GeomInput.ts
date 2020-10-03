@@ -31,6 +31,8 @@ type Rule = (val: any) => boolean | string;
 export default class GeomInput extends Vue {
   @Model('change') readonly geom!: Feature<MultiPolygon>;
 
+  @Prop({ default: true }) readonly enabled!: boolean;
+
   @Prop({}) readonly label!: string;
   @Prop({}) readonly rules!: Rule[];
   @Prop({}) readonly messages!: string[];

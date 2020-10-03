@@ -21,6 +21,7 @@
     <VueNgwLeafletEditable
       v-if="mapOptionsLocale"
       v-model="localGeom"
+      :enabled="enabled"
       :mapOptions="mapOptionsLocale"
       full-filling
       class="map"
