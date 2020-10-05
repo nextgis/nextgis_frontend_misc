@@ -15,8 +15,6 @@
     :prepend-icon="prependIcon"
     :height="height"
     :rules="rules"
-    @click:append="appendIconCallback"
-    @click:prepend="prependIconCallback"
   >
     <VueNgwLeafletEditable
       v-if="mapOptionsLocale"

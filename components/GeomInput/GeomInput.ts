@@ -47,8 +47,6 @@ export default class GeomInput extends Vue {
   @Prop({}) readonly persistentHint!: boolean;
   @Prop({}) readonly appendIcon!: string;
   @Prop({}) readonly prependIcon!: string;
-  @Prop({ default: () => null }) readonly appendIconCallback!: () => void;
-  @Prop({ default: () => null }) readonly prependIconCallback!: () => void;
 
   @Prop({ default: '' }) readonly height!: string;
 
