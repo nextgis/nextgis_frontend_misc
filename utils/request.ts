@@ -10,7 +10,7 @@ export function request<T = any>(
     const xhr = new XMLHttpRequest();
     const method = opt.method || 'GET';
     xhr.open(method, url, true);
-    xhr.onload = () => {
+    xhr.onload = (): void => {
       if ([200, 201, 204].indexOf(xhr.status) === -1) {
         try {
           const er = JSON.parse(xhr.response);
