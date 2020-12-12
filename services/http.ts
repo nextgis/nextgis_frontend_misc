@@ -48,6 +48,6 @@ export class Http {
   }
 }
 
-export function createHttp() {
+export function createHttp(): Http {
   return new Http();
 }
