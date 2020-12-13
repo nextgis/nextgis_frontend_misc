@@ -19,6 +19,6 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
   },
-  "include": ["components/"],
+  // "include": ["components", "vue", "utils", "services"],
   "exclude": ["node_modules", "dist"]
 }
