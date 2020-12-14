@@ -1,7 +1,4 @@
-import {
-  VuexModule,
-  MutationAction,
-} from 'vuex-module-decorators';
+import { VuexModule, MutationAction } from 'vuex-module-decorators';
 // import { isValueInArray } from '@/utils/validate';
 import { UserApi } from '../../interfaces/UserApi';
 import { UserCookie } from '../../interfaces/UserCookie';

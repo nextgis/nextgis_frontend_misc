@@ -1,6 +1,6 @@
 [submodule "frontend/@nextgis"]
 	path = frontend/@nextgis
 	url = git@github.com:nextgis/nextgis_frontend.git
-[submodule "frontend/@nextgis_vuetify"]
-	path = frontend/@nextgis_vuetify
+[submodule "frontend/@nextgis_misc"]
+	path = frontend/@nextgis_misc
 	url = git@github.com:nextgis/nextgis_frontend_vuetify.git
