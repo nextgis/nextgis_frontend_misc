@@ -16,7 +16,7 @@ export class UserModule extends VuexModule {
   locale = 'en';
   defaultLocale = 'en';
   // logged = cookie.getLoginState() !== '';
-  logged = '';
+  logged = false;
 
   cookie!: UserCookie;
   api!: UserApi;

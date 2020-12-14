@@ -30,7 +30,7 @@ export function request<T = any>(
         resolve(resp);
       }
     };
-    xhr.onerror = (er) => {
+    xhr.onerror = (er): void => {
       reject(er);
     };
     if (opt.headers) {
