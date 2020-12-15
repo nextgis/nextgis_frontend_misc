@@ -23,32 +23,32 @@ export class Http {
   }
 
   get<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
-    return this.request(this.formatUrl(url), { ...opt });
+    return this.request(url, { ...opt });
   }
 
   options<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
-    return this.request(this.formatUrl(url), {
+    return this.request(url, {
       ...opt,
       method: 'OPTIONS',
     });
   }
 
   post<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
-    return this.request(this.formatUrl(url), {
+    return this.request(url, {
       ...opt,
       method: 'POST',
     });
   }
 
   delete<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
-    return this.request(this.formatUrl(url), {
+    return this.request(url, {
       ...opt,
       method: 'DELETE',
     });
   }
 
   patch<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
-    return this.request(this.formatUrl(url), {
+    return this.request(url, {
       ...opt,
       method: 'PUT',
     });
