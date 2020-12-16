@@ -7,4 +7,5 @@ export interface RequestOptions {
   headers?: HeadersInit;
   file?: File;
   crossDomain?: boolean;
+  onError?: (er: any) => void;
 }

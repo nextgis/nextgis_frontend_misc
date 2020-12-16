@@ -99,7 +99,7 @@ export class Trans {
    */
   loadLanguageFile(lang: string): Promise<any> {
     return import(
-      /* webpackChunkName: "lang-[request]" */ `@/lang/${lang}.json`
+      /* webpackChunkName: "lang-[request]" */ `@/lang/${lang}`
     );
   }
   /**

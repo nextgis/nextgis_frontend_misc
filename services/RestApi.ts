@@ -73,7 +73,7 @@ export abstract class RestApi<T = Record<string, any>> {
     });
   }
 
-  create(body: Partial<T>): Promise<void> {
+  create(body: Partial<T>): Promise<unknown> {
     return this.http.request(this.prepareUrl('create'), {
       method: 'POST',
       body,
