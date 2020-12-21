@@ -1,3 +1,4 @@
+import { DeepPartial } from '@nextgis/utils';
 import { template } from '../utils/template';
 import { Http } from './Http';
 
@@ -73,7 +74,7 @@ export abstract class RestApi<T = Record<string, any>> {
     });
   }
 
-  create(body: Partial<T>): Promise<unknown> {
+  create(body: DeepPartial<T>): Promise<unknown> {
     return this.http.request(this.prepareUrl('create'), {
       method: 'POST',
       body,
@@ -81,7 +82,7 @@ export abstract class RestApi<T = Record<string, any>> {
     });
   }
 
-  update(id: string | number, body: Partial<T>): Promise<void> {
+  update(id: string | number, body: DeepPartial<T>): Promise<void> {
     return this.http.request(this.prepareUrl('update', { id }), {
       method: 'PUT',
       body,
