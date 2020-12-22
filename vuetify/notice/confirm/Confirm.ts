@@ -101,6 +101,7 @@ export default class Confirm extends Vue {
     this.value = value;
     this.$destroy();
   }
+
   change(): void {
     this.$destroy();
   }
