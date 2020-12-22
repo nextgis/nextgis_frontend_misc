@@ -1,3 +1,5 @@
+import { IconType } from '../IconType';
+
 export interface ConfirmOptions {
   message?: string;
   buttonTrueText?: string;
@@ -7,7 +9,7 @@ export interface ConfirmOptions {
   buttonFalseFlat?: boolean;
   buttonTrueFlat?: boolean;
   color?: 'success' | 'info' | 'error' | 'primary' | string;
-  icon?: string;
+  icon?: IconType;
   persistent?: boolean;
   title?: string;
   width?: number;
