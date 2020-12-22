@@ -1,9 +1,8 @@
-import Vuetify from 'vuetify';
 import { ConfirmOptions } from './confirm/ConfirmOptions';
 import { NoticeOptions } from './notice/NoticeOptions';
 
 export interface NoticeSetupOptions {
-  vuetify: Vuetify;
+  vuetify: any;
   notice: NoticeOptions | (() => NoticeOptions);
   confirmDialog: ConfirmOptions | (() => ConfirmOptions);
 }

@@ -71,7 +71,7 @@ export class Http {
 }
 
 export function createHttp(
-  baseUrl: string,
+  baseUrl?: string,
   options?: DefaultRequestOptions
 ): Http {
   return new Http(baseUrl, options);
