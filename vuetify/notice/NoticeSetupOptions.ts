@@ -3,6 +3,6 @@ import { NoticeOptions } from './notice/NoticeOptions';
 
 export interface NoticeSetupOptions {
   vuetify: any;
-  notice: NoticeOptions | (() => NoticeOptions);
-  confirmDialog: ConfirmOptions | (() => ConfirmOptions);
+  notice?: NoticeOptions | (() => NoticeOptions);
+  confirmDialog?: ConfirmOptions | (() => ConfirmOptions);
 }

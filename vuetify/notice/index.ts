@@ -9,6 +9,8 @@ import { ConfirmOptions } from './confirm/ConfirmOptions';
 import { VueConstructor } from 'vue/types/umd';
 import { NoticeOptions } from './notice/NoticeOptions';
 
+export { NoticeOptions, ConfirmOptions, NoticeSetupOptions };
+
 let createNoticeCmp: (
   Cmp: VueConstructor,
   options: Record<string, any>
