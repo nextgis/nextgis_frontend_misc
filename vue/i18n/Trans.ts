@@ -86,6 +86,7 @@ export class Trans {
    * Loads new translation messages and changes the language when finished
    */
   changeLanguage(lang: string): Promise<any> {
+    localStorage.setItem('language', lang);
     if (!this.isLangSupported(lang))
       return Promise.reject(new Error('Language not supported'));
     if (this._i18n.locale === lang) return Promise.resolve(lang); // has been loaded prior
@@ -98,9 +99,7 @@ export class Trans {
    * Async loads a translation file
    */
   loadLanguageFile(lang: string): Promise<any> {
-    return import(
-      /* webpackChunkName: "lang-[request]" */ `@/lang/${lang}`
-    );
+    return import(/* webpackChunkName: "lang-[request]" */ `@/lang/${lang}`);
   }
   /**
    * Checks if a lang is supported
