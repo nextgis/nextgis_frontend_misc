@@ -80,10 +80,14 @@ function getOptions<T>(name: keyof NoticeSetupOptions): T {
 }
 
 export function confirmDialog(
-  message: string,
+  msgOrOpt: string | ConfirmOptions,
   options: ConfirmOptions = {}
 ): CancelablePromise<boolean> {
-  options.message = message;
+  if (typeof msgOrOpt === 'string') {
+    options.message = msgOrOpt;
+  } else if (typeof msgOrOpt === 'object') {
+    options = { ...msgOrOpt, ...options };
+  }
   if (createNoticeCmp) {
     return createNoticeCmp(Confirm, {
       ...getOptions<ConfirmOptions>('confirmDialog'),
@@ -96,10 +100,14 @@ export function confirmDialog(
 
 let noticePromise: CancelablePromise<boolean>;
 export function notice(
-  message: string,
+  msgOrOpt: string | NoticeOptions,
   options: NoticeOptions = {}
 ): CancelablePromise<boolean> {
-  options.message = message;
+  if (typeof msgOrOpt === 'string') {
+    options.message = msgOrOpt;
+  } else if (typeof msgOrOpt === 'object') {
+    options = { ...msgOrOpt, ...options };
+  }
   if (createNoticeCmp) {
     if (noticePromise) {
       noticePromise.cancel();
