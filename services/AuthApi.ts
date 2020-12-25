@@ -4,7 +4,7 @@ import { template } from '../utils/template';
 import { Http } from './Http';
 import { RestApi } from './RestApi';
 
-export class UserApi<UserInfo = Record<string, any>>
+export class AuthApi<UserInfo = Record<string, any>>
   extends RestApi<UserInfo>
   implements UserApiInterface {
   constructor(http: Http) {
