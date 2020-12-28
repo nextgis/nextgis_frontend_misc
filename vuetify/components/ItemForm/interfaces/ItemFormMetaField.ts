@@ -11,8 +11,6 @@ export interface ItemFormMetaSimpleField<F extends Key = Key>
   name: F;
   widget?: 'select' | 'textarea' | string;
   type?: 'string' | 'boolean' | 'number' | 'date';
-  getter?: (val: any) => any;
-  setter?: (val: any) => any;
 }
 
 interface Choice {

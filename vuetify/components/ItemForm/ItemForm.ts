@@ -34,31 +34,14 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
     return item;
   }
 
-  @Watch('localItem')
+  @Watch('localItem', { deep: true })
   @Emit('change')
-  onChange(): I {
+  onChange(localItem: I): I {
     return this.localItem as I;
   }
 
   mounted(): void {
     const item: Record<string, any> = { ...this.item };
-    this.meta.fields.forEach((x) => {
-      const getter = x.getter;
-      const setter = x.setter;
-      if (typeof getter === 'function' && typeof setter === 'function') {
-        const computedProp = {
-          get() {
-            return getter(item[x.name]);
-          },
-          set(val: any) {
-            item[x.name] = setter(val);
-          },
-        };
-        // item[x.name] = computedProp;
-        item[x.name] = computedProp;
-      }
-    });
-
     this.localItem = item;
   }
 
