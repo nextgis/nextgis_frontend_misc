@@ -21,7 +21,7 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
   @Prop({ default: false }) readonly dense!: boolean;
   @Prop({ default: false }) readonly outlined!: boolean;
 
-  localItem: I | null = null;
+  localItem: Record<string, any> | null = null;
   valid = true;
 
   get fields(): ItemFormMetaField[] {
@@ -41,11 +41,29 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
   }
 
   mounted(): void {
-    this.localItem = this.item;
+    const item: Record<string, any> = { ...this.item };
+    this.meta.fields.forEach((x) => {
+      const getter = x.getter;
+      const setter = x.setter;
+      if (typeof getter === 'function' && typeof setter === 'function') {
+        const computedProp = {
+          get() {
+            return getter(item[x.name]);
+          },
+          set(val: any) {
+            item[x.name] = setter(val);
+          },
+        };
+        // item[x.name] = computedProp;
+        item[x.name] = computedProp;
+      }
+    });
+
+    this.localItem = item;
   }
 
   hasSlot(field: ItemFormMetaField): boolean {
-    const name = String(field.name);
+    const name = 'field.' + String(field.name);
     return !!this.$slots[name] || !!this.$scopedSlots[name];
   }
 

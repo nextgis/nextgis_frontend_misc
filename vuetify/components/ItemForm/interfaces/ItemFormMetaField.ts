@@ -9,7 +9,10 @@ export type ItemFormMetaField<F extends Key = Key> =
 export interface ItemFormMetaSimpleField<F extends Key = Key>
   extends InputOptions {
   name: F;
+  widget?: 'select' | 'textarea' | string;
   type?: 'string' | 'boolean' | 'number' | 'date';
+  getter?: (val: any) => any;
+  setter?: (val: any) => any;
 }
 
 interface Choice {
