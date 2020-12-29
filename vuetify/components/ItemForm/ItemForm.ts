@@ -55,7 +55,12 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
 
   @Watch('localItem', { deep: true })
   @Emit('change')
-  onChange(localItem: I): I {
+  onChange(localItem: Record<string, any>): Record<string, any> {
+    for (const field of this.meta.fields) {
+      if (field.type === 'number' && full(localItem[field.name])) {
+        localItem[field.name] = Number(localItem[field.name]);
+      }
+    }
     return localItem;
   }
 
