@@ -34,10 +34,16 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
     return item;
   }
 
+  @Watch('valid')
+  @Emit('valid')
+  onValid(valid: boolean): boolean {
+    return valid;
+  }
+
   @Watch('localItem', { deep: true })
   @Emit('change')
   onChange(localItem: I): I {
-    return this.localItem as I;
+    return localItem;
   }
 
   mounted(): void {
