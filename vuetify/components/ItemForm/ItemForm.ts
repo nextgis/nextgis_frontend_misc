@@ -1,4 +1,7 @@
+import { mdiCalendar } from '@mdi/js';
 import { full } from '@nextgis/utils';
+// @ts-ignore
+// import DatetimePicker from './components/DatetimePicker/DatetimePicker.vue';
 import {
   Vue,
   Component,
@@ -11,6 +14,10 @@ import {
 import { ItemFormMeta } from './interfaces/ItemFormMeta';
 import { ItemFormMetaField } from './interfaces/ItemFormMetaField';
 
+// @ts-ignore
+import DatetimePicker from 'vuetify-datetime-picker';
+Vue.use(DatetimePicker);
+
 @Component({
   components: {},
 })
@@ -20,6 +27,10 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
   @Prop({ default: false }) readonly readonly!: boolean;
   @Prop({ default: false }) readonly dense!: boolean;
   @Prop({ default: false }) readonly outlined!: boolean;
+
+  icons = {
+    calendar: mdiCalendar,
+  };
 
   localItem: Record<string, any> | null = null;
   valid = true;
@@ -73,6 +84,34 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
       props.rules.unshift((v: any) => this.requiredRule(v, field));
     }
     return props;
+  }
+
+  getFieldValue(field: ItemFormMetaField): any {
+    if (this.localItem) {
+      const name = String(field.name);
+      const value = this.localItem[name];
+      if (field.type === 'date') {
+        // return this._getStrFromDateField(value);
+      }
+      return value;
+    }
+  }
+
+  setFieldValue(f: ItemFormMetaField, val: any): void {
+    let valid = true;
+    if (f.type === 'date' && typeof val === 'string') {
+      // const appDate = formatToAppDate(val);
+      // valid = this.rules.date.every((r) => r(appDate));
+      valid = true;
+      // val = this._getDateFieldFromStr(formatToNgwDate(val));
+    }
+    if (valid && this.localItem) {
+      Vue.set(this.localItem, String(f.name), val);
+    }
+  }
+
+  parseDateFromFieldValue(date: string): string | undefined {
+    return date;
   }
 
   private requiredRule(value: any, field: ItemFormMetaField): string | boolean {
