@@ -6,5 +6,7 @@ export interface ItemFormMeta<
   fields: ItemFormMetaField<keyof F>[];
   messages?: {
     enter_filed?: string;
+    ok_text?: string;
+    clear_text?: string;
   };
 }
