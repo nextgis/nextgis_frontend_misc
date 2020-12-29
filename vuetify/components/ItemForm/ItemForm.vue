@@ -9,13 +9,13 @@
         v-bind:item="item"
       >
       </slot>
-      <v-datetime-picker
+      <DatetimePicker
         v-else-if="f.widget && f.widget === 'datetime'"
         :key="f.name"
         v-model="item[f.name]"
         :textFieldProps="getFieldProps(f)"
         v-bind="getFieldProps(f)"
-      ></v-datetime-picker>
+      ></DatetimePicker>
       <!-- <v-row v-else-if="f.widget && f.widget === 'datetime'" :key="f.name">
         <v-col>
           <v-menu

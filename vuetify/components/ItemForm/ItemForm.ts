@@ -1,7 +1,7 @@
 import { mdiCalendar } from '@mdi/js';
 import { full } from '@nextgis/utils';
 // @ts-ignore
-// import DatetimePicker from './components/DatetimePicker/DatetimePicker.vue';
+import DatetimePicker from '../DatetimePicker/DatetimePicker.vue';
 import {
   Vue,
   Component,
@@ -15,11 +15,13 @@ import { ItemFormMeta } from './interfaces/ItemFormMeta';
 import { ItemFormMetaField } from './interfaces/ItemFormMetaField';
 
 // @ts-ignore
-import DatetimePicker from 'vuetify-datetime-picker';
-Vue.use(DatetimePicker);
+// import DatetimePicker from 'vuetify-datetime-picker';
+// Vue.use(DatetimePicker);
 
 @Component({
-  components: {},
+  components: {
+    DatetimePicker,
+  },
 })
 export default class ItemForm<I = Record<string, any>> extends Vue {
   @Model('change') readonly item!: I;
