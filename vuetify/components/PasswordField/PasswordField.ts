@@ -2,7 +2,7 @@ import { mdiEye, mdiEyeOff } from '@mdi/js';
 import { Component, Model, Vue, Watch, Emit } from 'vue-property-decorator';
 import { VTextField } from 'vuetify/lib';
 
-@Component({ components: VTextField })
+@Component({ components: { VTextField } })
 export default class PasswordField extends Vue {
   @Model('input') password!: string;
 

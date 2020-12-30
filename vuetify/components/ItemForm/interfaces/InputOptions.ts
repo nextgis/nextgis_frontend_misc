@@ -4,6 +4,7 @@ export interface InputOptions {
   label?: string;
   enabled?: boolean;
   readonly?: boolean;
+  placeholder?: string;
   messages?: string[];
   required?: boolean;
   success?: boolean;
