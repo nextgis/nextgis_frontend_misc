@@ -1,6 +1,6 @@
 <template>
-  <v-form v-model="valid">
-    <template v-for="f in fields">
+  <v-form v-model="valid" ref="ItemForm">
+    <template v-for="f in fields_">
       <slot
         v-if="hasSlot(f)"
         :name="'field.' + f.name"
@@ -13,11 +13,17 @@
         v-else-if="f.widget && f.widget === 'datetime'"
         :key="f.name"
         :textFieldProps="getFieldProps(f)"
-        :okText="meta.messages.ok_text || 'Ok'"
-        :clearText="meta.messages.clear_text || 'Clear'"
+        :okText="messages_.okText"
+        :clearText="messages_.clear_text || 'Clear'"
         v-model="item[f.name]"
         v-bind="getFieldProps(f)"
       ></DatetimePicker>
+      <PasswordField
+        v-else-if="f.widget && f.widget === 'password'"
+        :key="f.name"
+        v-model="item[f.name]"
+        v-bind="getFieldProps(f)"
+      ></PasswordField>
       <v-text-field
         v-else
         :key="f.name"
@@ -26,6 +32,7 @@
       >
       </v-text-field>
     </template>
+    <slot v-bind:valid="valid"></slot>
   </v-form>
 </template>
 

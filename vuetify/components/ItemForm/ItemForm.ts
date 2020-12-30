@@ -1,7 +1,8 @@
 import { mdiCalendar } from '@mdi/js';
+import { VForm, VTextField } from 'vuetify/lib';
 import { full } from '@nextgis/utils';
-// @ts-ignore
 import DatetimePicker from '../DatetimePicker/DatetimePicker.vue';
+import PasswordField from '../PasswordField/PasswordField.vue';
 import {
   Vue,
   Component,
@@ -9,10 +10,13 @@ import {
   Prop,
   Watch,
   Emit,
+  Ref,
 } from 'vue-property-decorator';
 
 import { ItemFormMeta } from './interfaces/ItemFormMeta';
-import { ItemFormMetaField } from './interfaces/ItemFormMetaField';
+import { ItemFormField } from './interfaces/ItemFormField';
+import { settings } from './settings';
+import { Messages } from './interfaces/Messages';
 
 // @ts-ignore
 // import DatetimePicker from 'vuetify-datetime-picker';
@@ -21,14 +25,21 @@ import { ItemFormMetaField } from './interfaces/ItemFormMetaField';
 @Component({
   components: {
     DatetimePicker,
+    VForm,
+    VTextField,
+    PasswordField,
   },
 })
-export default class ItemForm<I = Record<string, any>> extends Vue {
+export default class ItemFormMixin<I = Record<string, any>> extends Vue {
+  @Ref('ItemForm') readonly itemForm!: HTMLFormElement;
   @Model('change') readonly item!: I;
   @Prop() readonly meta!: ItemFormMeta;
+  @Prop({ type: Object }) readonly messages!: Messages;
+  @Prop({ type: Array, default: () => [] })
+  readonly fields!: ItemFormField[];
   @Prop({ default: false }) readonly readonly!: boolean;
-  @Prop({ default: false }) readonly dense!: boolean;
-  @Prop({ default: false }) readonly outlined!: boolean;
+  @Prop({ default: settings.dense }) readonly dense!: boolean;
+  @Prop({ default: settings.outlined }) readonly outlined!: boolean;
 
   icons = {
     calendar: mdiCalendar,
@@ -37,8 +48,12 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
   localItem: Record<string, any> | null = null;
   valid = true;
 
-  get fields(): ItemFormMetaField[] {
-    return this.meta.fields;
+  get fields_(): ItemFormField[] {
+    return (this.fields.length ? this.fields : this.meta.fields) || [];
+  }
+
+  get messages_(): Messages {
+    return this.messages || this.meta.messages || settings.messages;
   }
 
   @Watch('item')
@@ -56,9 +71,10 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
   @Watch('localItem', { deep: true })
   @Emit('change')
   onChange(localItem: Record<string, any>): Record<string, any> {
-    for (const field of this.meta.fields) {
-      if (field.type === 'number' && full(localItem[field.name])) {
-        localItem[field.name] = Number(localItem[field.name]);
+    for (const field of this.fields_) {
+      const name = String(field.name);
+      if (field.type === 'number' && full(localItem[name])) {
+        localItem[name] = Number(localItem[name]);
       }
     }
     return localItem;
@@ -69,12 +85,12 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
     this.localItem = item;
   }
 
-  hasSlot(field: ItemFormMetaField): boolean {
+  hasSlot(field: ItemFormField): boolean {
     const name = 'field.' + String(field.name);
     return !!this.$slots[name] || !!this.$scopedSlots[name];
   }
 
-  getFieldProps(field: ItemFormMetaField): ItemFormMetaField {
+  getFieldProps(field: ItemFormField): ItemFormField {
     const props = {
       dense: this.dense,
       outlined: this.outlined,
@@ -93,7 +109,7 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
     return props;
   }
 
-  getFieldValue(field: ItemFormMetaField): any {
+  getFieldValue(field: ItemFormField): any {
     if (this.localItem) {
       const name = String(field.name);
       const value = this.localItem[name];
@@ -104,7 +120,7 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
     }
   }
 
-  setFieldValue(f: ItemFormMetaField, val: any): void {
+  setFieldValue(f: ItemFormField, val: any): void {
     let valid = true;
     if (f.type === 'date' && typeof val === 'string') {
       // const appDate = formatToAppDate(val);
@@ -121,12 +137,28 @@ export default class ItemForm<I = Record<string, any>> extends Vue {
     return date;
   }
 
-  private requiredRule(value: any, field: ItemFormMetaField): string | boolean {
-    return (
-      full(value) ||
-      `${
-        (this.meta.messages && this.meta.messages.enter_filed) || 'Please enter'
-      } ${field.label}`
-    );
+  validate(): void {
+    this.itemForm.validate();
+  }
+  reset(): void {
+    this.itemForm.reset();
+  }
+  resetValidation(): void {
+    this.itemForm.resetValidation();
+  }
+
+  // showPwd() {
+  //   if (this.passwordType === 'password') {
+  //     this.passwordType = '';
+  //   } else {
+  //     this.passwordType = 'password';
+  //   }
+  //   this.$nextTick(() => {
+  //     this.password.focus();
+  //   });
+  // }
+
+  private requiredRule(value: any, field: ItemFormField): string | boolean {
+    return full(value) || `${this.messages_.enterFiled} ${field.label}`;
   }
 }

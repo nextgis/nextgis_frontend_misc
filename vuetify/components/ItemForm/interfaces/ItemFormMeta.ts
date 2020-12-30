@@ -1,12 +1,9 @@
-import { ItemFormMetaField } from './ItemFormMetaField';
+import { ItemFormField } from './ItemFormField';
+import { Messages } from './Messages';
 
 export interface ItemFormMeta<
   F extends Record<string, any> = Record<string, any>
 > {
-  fields: ItemFormMetaField<keyof F>[];
-  messages?: {
-    enter_filed?: string;
-    ok_text?: string;
-    clear_text?: string;
-  };
+  fields: ItemFormField<keyof F>[];
+  messages?: Messages;
 }

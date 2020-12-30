@@ -1,9 +1,9 @@
 // @ts-ignore
-import ItemFormComponent from './ItemForm.vue';
-import ItemForm from './ItemForm';
+import ItemForm from './ItemForm.vue';
+import ItemFormMixin from './ItemForm';
 
-export { ItemFormComponent, ItemForm };
+export { ItemForm, ItemFormMixin };
 
 export * from './interfaces/InputOptions';
 export * from './interfaces/ItemFormMeta';
-export * from './interfaces/ItemFormMetaField';
+export * from './interfaces/ItemFormField';
