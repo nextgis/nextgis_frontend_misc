@@ -7,19 +7,20 @@
 
     <template v-slot:action="{ attrs }">
       <v-btn v-if="dismissible" icon v-bind="attrs" @click="dismiss">
-        <v-icon>{{closeIcon}}</v-icon>
+        <v-icon>{{ closeIcon }}</v-icon>
       </v-btn>
     </template>
   </v-snackbar>
 </template>
 
 <script>
-import { VSnackbar, VIcon } from "vuetify/lib";
+import { VSnackbar, VIcon, VBtn } from "vuetify/lib";
 
 export default {
   components: {
     VSnackbar,
     VIcon,
+    VBtn,
   },
   props: {
     color: {
