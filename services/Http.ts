@@ -23,7 +23,10 @@ export class Http {
     return token ? { Authorization: 'Token ' + token } : undefined;
   }
 
-  request<T = any>(url: string, opt: RequestOptions): CancelablePromise<T> {
+  request<T = any>(
+    url: string,
+    opt: RequestOptions = {}
+  ): CancelablePromise<T> {
     const headers = { ...this.getAuthorizationHeader(), ...opt.headers };
     return request(this.formatUrl(url), {
       headers,
