@@ -57,7 +57,7 @@
 import path from 'path'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
-import { isExternal } from '@/utils/validate'
+import { isExternal } from '../../../utils/isExternal';
 import SidebarItemLink from './SidebarItemLink.vue'
 
 @Component({
