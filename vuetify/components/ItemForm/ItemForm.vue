@@ -24,6 +24,13 @@
         v-model="item[f.name]"
         v-bind="getFieldProps(f)"
       ></PasswordField>
+      <v-checkbox
+        v-else-if="f.type === 'boolean'"
+        :key="f.name"
+        v-bind="getFieldProps(f)"
+        v-model="item[f.name]"
+      >
+      </v-checkbox>
       <v-text-field
         v-else
         :key="f.name"

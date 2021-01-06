@@ -2,6 +2,8 @@
   <v-text-field
     v-model="value"
     v-bind="$attrs"
+    placeholder=" "
+    autocomplete="new-password"
     :type="showPassword ? 'text' : 'password'"
     :append-icon="appendIcon"
     @click:append="showPassword = !showPassword"

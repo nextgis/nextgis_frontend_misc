@@ -1,9 +1,11 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
-// import SidebarItem from './SidebarItem.vue';
-// import SidebarLogo from './SidebarLogo.vue';
 import { RouteConfig } from 'vue-router';
+import { Tree } from '@nextgis/tree';
+
+let ID = 0;
 
 interface TreeItem {
+  id: string;
   path: string;
   to?: string;
   name: string;
@@ -18,16 +20,10 @@ interface TreeItem {
   },
 })
 export default class NavTree extends Vue {
-  @Prop({ default: true }) readonly opened!: boolean;
   @Prop({ default: () => [] }) readonly routes!: RouteConfig[];
 
-  // get menuActiveTextColor() {
-  //   if (SettingsModule.sidebarTextTheme) {
-  //     return SettingsModule.theme;
-  //   } else {
-  //     return variables.menuActiveText;
-  //   }
-  // }
+  active: string[] = [];
+  open: string[] = [];
 
   get items(): TreeItem[] {
     return this.createTreeItems(this.routes);
@@ -43,11 +39,20 @@ export default class NavTree extends Vue {
     return path;
   }
 
-  get isCollapse(): boolean {
-    return !this.opened;
+  created(): void {
+    const tree = new Tree({ children: [...this.items] });
+    const exist = tree.find((x) => x.id === this.$route.name);
+    if (exist) {
+      const parentIds = exist
+        .getParents()
+        .filter((x) => x.item.id)
+        .map((x) => x.item.id);
+      this.open = parentIds;
+      this.active = [exist.item.id];
+    }
   }
 
-  createTreeItems(routes: RouteConfig[]): TreeItem[] {
+  private createTreeItems(routes: RouteConfig[]): TreeItem[] {
     const items: TreeItem[] = [];
     routes.forEach((x) => {
       if ((x.meta && x.meta.title && !x.meta.hidden) || x.children) {
@@ -60,9 +65,10 @@ export default class NavTree extends Vue {
     return items;
   }
 
-  createTreeItem(route: RouteConfig): TreeItem | undefined {
+  private createTreeItem(route: RouteConfig): TreeItem | undefined {
     if (route.meta) {
       const treeItem: TreeItem = {
+        id: route.name || String(ID++),
         path: route.path,
         to: route.name,
         name: '' + this.$t(route.meta.title),
@@ -75,7 +81,7 @@ export default class NavTree extends Vue {
     }
   }
 
-  theOnlyOneChild(route: RouteConfig): RouteConfig | undefined {
+  private theOnlyOneChild(route: RouteConfig): RouteConfig | undefined {
     if (this.showingChildNumber(route) > 1) {
       return undefined;
     }
@@ -89,7 +95,7 @@ export default class NavTree extends Vue {
     return { ...route };
   }
 
-  showingChildNumber(route: RouteConfig): number {
+  private showingChildNumber(route: RouteConfig): number {
     if (route.children) {
       const showingChildren = route.children.filter((item) => {
         if (item.meta && item.meta.hidden) {
