@@ -31,6 +31,13 @@
         v-model="item[f.name]"
       >
       </v-checkbox>
+      <v-select
+        v-else-if="f.choices && f.widget && f.widget === 'select'"
+        :key="f.name"
+        :items="f.choices"
+        v-model="item[f.name]"
+        v-bind="getFieldProps(f)"
+      ></v-select>
       <v-text-field
         v-else
         :key="f.name"

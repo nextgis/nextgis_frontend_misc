@@ -17,7 +17,7 @@ export interface ItemFormSimpleField<F extends Key = Key> extends InputOptions {
 
 interface Choice {
   text?: string;
-  value: string;
+  value: any;
 }
 
 export interface ItemFormChoicesField<F extends Key = Key>
