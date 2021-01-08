@@ -17,14 +17,14 @@ export default class GeomInput extends Mixins(VueNgwMap) {
 
   isStarted = false;
   drawingInProgress = false;
-  polygon: Path | null = null;
   removeControl: any = null;
   errors: string[] = [];
 
-  map: Map | null = null;
+  private _map: Map | null = null;
+  private _polygon: Path | null = null;
 
   @Watch('enabled')
-  onEnabledChange() {
+  onEnabledChange(): void {
     if (this.enabled) {
       this.startEditing();
     } else {
@@ -33,7 +33,7 @@ export default class GeomInput extends Mixins(VueNgwMap) {
   }
 
   @Watch('map')
-  onMapLoad(map: Map) {
+  onMapLoad(map: Map): void {
     if (map) {
       this.initRemoveControl();
       this.startEditing();
@@ -41,7 +41,7 @@ export default class GeomInput extends Mixins(VueNgwMap) {
   }
 
   @Watch('geom')
-  onGeom() {
+  onGeom(): void {
     if (!this.drawingInProgress) {
       // this.stopEditing();
       if (this.geom) {
@@ -50,11 +50,11 @@ export default class GeomInput extends Mixins(VueNgwMap) {
           this.replacePolygon(polygon);
         } else {
           this.stopEditing();
-          this.polygon = polygon;
+          this._polygon = polygon;
           if (this.enabled) {
             this.startEditing();
           } else {
-            this.addLayerToMap(this.polygon);
+            this.addLayerToMap(this._polygon);
           }
         }
       } else {
@@ -71,22 +71,22 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     return this.mapOptions;
   }
 
-  mounted() {
+  mounted(): void {
     this.ngwMap.onLoad().then((ngwMap) => {
       this.localGeom = this.geom;
-      this.map = ngwMap.mapAdapter.map || null;
+      this._map = ngwMap.mapAdapter.map || null;
       if (this.localGeom) {
         this.onGeom();
       }
     });
   }
 
-  destroyed() {
+  destroyed(): void {
     this.stopEditing();
   }
 
-  startEditing() {
-    const map = this.map;
+  startEditing(): void {
+    const map = this._map;
     if (this.enabled && !this.isStarted && map) {
       map.doubleClickZoom.disable();
 
@@ -98,8 +98,8 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  stopEditing() {
-    const map = this.map;
+  stopEditing(): void {
+    const map = this._map;
     if (this.isStarted && map) {
       map.doubleClickZoom.enable();
 
@@ -111,11 +111,11 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  activatePolygonDrawing() {
-    const map = this.map;
+  activatePolygonDrawing(): void {
+    const map = this._map;
     if (map) {
-      if (this.polygon) {
-        this.addLayerToMap(this.polygon);
+      if (this._polygon) {
+        this.addLayerToMap(this._polygon);
       } else {
         // @ts-ignore
         map.editTools.startPolygon();
@@ -123,8 +123,8 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  addLayerToMap(layer: Path) {
-    const map = this.map;
+  addLayerToMap(layer: Path): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       const featuresLayer = map.editTools.featuresLayer;
@@ -133,26 +133,26 @@ export default class GeomInput extends Mixins(VueNgwMap) {
         // @ts-ignore
         layer.enableEdit();
       }
-      this.setLayerReadyColor(layer);
+      // this.setLayerReadyColor(layer);
     }
   }
 
-  disablePolygonDrawing() {
-    const map = this.map;
+  disablePolygonDrawing(): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       map.editTools.stopDrawing();
-      if (this.polygon) {
+      if (this._polygon) {
         // @ts-ignore
-        this.polygon.disableEdit();
-        this.polygon.remove();
+        this._polygon.disableEdit();
+        this._polygon.remove();
       }
     }
   }
 
-  initRemoveControl() {
+  initRemoveControl(): void {
     const ngwMap = this.ngwMap;
-    const map = this.map;
+    const map = this._map;
     if (ngwMap && map) {
       this.removeControl = ngwMap.createButtonControl({
         html:
@@ -163,13 +163,13 @@ export default class GeomInput extends Mixins(VueNgwMap) {
       });
       map.on('editable:drawing:click', this.showRemoveControl, this);
     }
-    const status = this.polygon;
+    const status = this._polygon;
     if (status) {
       this.showRemoveControl();
     }
   }
 
-  showRemoveControl() {
+  showRemoveControl(): void {
     const ngwMap = this.ngwMap;
     this.destroyRemoveControl();
     if (ngwMap && this.removeControl && this.enabled) {
@@ -177,28 +177,28 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  destroyRemoveControl() {
+  destroyRemoveControl(): void {
     const ngwMap = this.ngwMap;
     if (ngwMap && this.removeControl) {
       ngwMap.removeControl(this.removeControl);
     }
   }
 
-  setPolygonData(layers: Path[]) {
-    this.polygon = null;
-    this.polygon = Object.values(layers)[0];
+  setPolygonData(layers: Path[]): void {
+    this._polygon = null;
+    this._polygon = Object.values(layers)[0];
   }
 
-  onAreaChanged() {
-    const map = this.map;
+  onAreaChanged(): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       const featuresLayer = map.editTools.featuresLayer;
       this.setPolygonData(featuresLayer._layers);
       let geom: MultiPolygon | Polygon | null = null;
-      if (this.polygon && 'toGeoJSON' in this.polygon) {
+      if (this._polygon && 'toGeoJSON' in this._polygon) {
         // @ts-ignore
-        geom = this.polygon.toGeoJSON().geometry;
+        geom = this._polygon.toGeoJSON().geometry;
         if (geom && geom.type === 'Polygon') {
           geom = {
             type: 'MultiPolygon',
@@ -212,10 +212,10 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  updateRemoveControl() {
-    const featureLayers: any[] = this.map
+  updateRemoveControl(): void {
+    const featureLayers: any[] = this._map
       ? // @ts-ignore
-        this.map.editTools.featuresLayer._layers
+        this._map.editTools.featuresLayer._layers
       : [];
     if (Object.keys(featureLayers).length > 0) {
       this.showRemoveControl();
@@ -224,8 +224,8 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  replacePolygon(polygon: Path) {
-    const map = this.map;
+  replacePolygon(polygon: Path): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       const featuresLayer = map.editTools.featuresLayer;
@@ -234,14 +234,14 @@ export default class GeomInput extends Mixins(VueNgwMap) {
         featuresLayer.removeLayer(layer);
         map.removeLayer(layer);
       });
-      this.polygon = null;
+      this._polygon = null;
     }
-    this.polygon = polygon;
+    this._polygon = polygon;
     this.activatePolygonDrawing();
   }
 
-  removePolygon() {
-    const map = this.map;
+  removePolygon(): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       const featuresLayer = map.editTools.featuresLayer;
@@ -250,12 +250,12 @@ export default class GeomInput extends Mixins(VueNgwMap) {
       }
       this.updateRemoveControl();
       this.onAreaChanged();
-      this.polygon = null;
+      this._polygon = null;
     }
   }
 
-  removeLayer(layer: Layer) {
-    const map = this.map;
+  removeLayer(layer: Layer): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       const featuresLayer = map.editTools.featuresLayer;
@@ -264,28 +264,28 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  clearAll() {
+  clearAll(): void {
     this.removePolygon();
 
     this.errors = [];
     this.activatePolygonDrawing();
   }
 
-  setLayerReadyColor(layer: Path) {
+  setLayerReadyColor(layer: Path): void {
     layer.setStyle({ color: '#00b77e' });
   }
 
-  _onDrawingEnd(e: any) {
+  private _onDrawingEnd(e: any): void {
     // this.hideTooltip();
     this.setLayerReadyColor(e.layer);
     this.drawingInProgress = false;
   }
 
-  _onDrawingClicked(e: any) {
+  private _onDrawingClicked(e: any): void {
     // this.showTooltip(e);
   }
 
-  _onDrawingClick(e: any) {
+  private _onDrawingClick(e: any): void {
     // TODO: try to get status from native leaflet function, not from DOM
     if (
       (' ' + e.originalEvent.target.className + ' ').indexOf(
@@ -299,19 +299,19 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  _onDrawingCancel(e: any) {
+  private _onDrawingCancel(e: any): void {
     if (e.layer.editEnabled()) {
       this.removeLayer(e.layer);
       // this.removePolygon();
     }
   }
 
-  _onDrawingDragstart() {
+  private _onDrawingDragstart(): void {
     this.drawingInProgress = true;
   }
 
-  _onGeometryChange(e: any) {
-    const map = this.map;
+  private _onGeometryChange(e: any): void {
+    const map = this._map;
     if (map) {
       // @ts-ignore
       const layers = map._layers;
@@ -321,8 +321,8 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  _addEventsListeners() {
-    const map = this.map;
+  private _addEventsListeners(): void {
+    const map = this._map;
     if (map) {
       map.on('editable:drawing:end', this._onDrawingEnd, this);
 
@@ -342,8 +342,8 @@ export default class GeomInput extends Mixins(VueNgwMap) {
     }
   }
 
-  _removeEventsListeners() {
-    const map = this.map;
+  private _removeEventsListeners(): void {
+    const map = this._map;
     if (map) {
       map.off('editable:drawing:end', this._onDrawingEnd, this);
 

@@ -57,18 +57,18 @@ export default class GeomInput extends Vue {
   localGeom: Feature<MultiPolygon> | null = null;
 
   @Watch('geom')
-  onGeomChange(geom: Feature<MultiPolygon>) {
+  onGeomChange(geom: Feature<MultiPolygon>): Feature<MultiPolygon> {
     this.localGeom = geom;
     return geom;
   }
 
   @Watch('localGeom')
   @Emit('change')
-  onLocalGeomChange() {
+  onLocalGeomChange(): Feature<MultiPolygon> | null {
     return this.localGeom;
   }
 
-  mounted() {
+  mounted(): void {
     this.localGeom = this.geom;
     this.mapOptionsLocale = {
       ...deepmerge(MAP_OPTIONS, this.mapOptions),
