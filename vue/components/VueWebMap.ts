@@ -3,12 +3,14 @@ import { Prop, Vue, Watch } from 'vue-property-decorator';
 import Component from 'vue-class-component';
 import { MapAdapter, Cursor, MapOptions, WebMap } from '@nextgis/webmap';
 import { LngLatBoundsArray, Type } from '@nextgis/utils';
+import { TileJson } from '../../interfaces/TileJson';
 
 @Component({})
 export class VueWebMap<
   WM extends WebMap = WebMap<any, any, any, any, any>,
   WMO extends MapOptions = MapOptions
 > extends Vue {
+  @Prop({ type: Object }) tileJson!: TileJson;
   @Prop({ type: Boolean }) readonly fullFilling!: boolean;
   @Prop({ type: Object }) readonly mapAdapter!: MapAdapter;
   @Prop({ type: Object }) readonly mapOptions!: WMO;
@@ -38,6 +40,11 @@ export class VueWebMap<
     this.webMap.setCursor(cursor || 'default');
   }
 
+  @Watch('tileJson')
+  onTileJsonChange(): void {
+    this._destroy();
+  }
+
   created(): void {
     this._WebMap = WebMap;
   }
@@ -47,6 +54,33 @@ export class VueWebMap<
   }
 
   mounted(): void {
+    this._buildWebMap();
+  }
+
+  beforeDestroy(): void {
+    this._destroy();
+  }
+
+  render(h: CreateElement): VNode {
+    const staticStyle: { [param: string]: string } = {
+      zIndex: '0',
+    };
+    if (this.fullFilling) {
+      staticStyle.width = '100%';
+      staticStyle.height = '100%';
+    }
+
+    const data: VNodeData = {
+      staticClass: 'vue-ngw-map',
+      staticStyle,
+      // 'class': this.classes,
+      attrs: { 'data-app': true },
+      // domProps: { id: this.id }
+    };
+    return this.ready ? h('div', data, this.$slots.default) : h('div', data);
+  }
+
+  private _buildWebMap(): void {
     const props: Record<string, any> = {};
     for (const p in this.$props) {
       const prop = this.$props[p];
@@ -70,29 +104,11 @@ export class VueWebMap<
     });
   }
 
-  beforeDestroy(): void {
+  private _destroy(): void {
+    this.ready = false;
     if (this.webMap) {
       this.webMap.destroy();
     }
-  }
-
-  render(h: CreateElement): VNode {
-    const staticStyle: { [param: string]: string } = {
-      zIndex: '0',
-    };
-    if (this.fullFilling) {
-      staticStyle.width = '100%';
-      staticStyle.height = '100%';
-    }
-
-    const data: VNodeData = {
-      staticClass: 'vue-ngw-map',
-      staticStyle,
-      // 'class': this.classes,
-      attrs: { 'data-app': true },
-      // domProps: { id: this.id }
-    };
-    return this.ready ? h('div', data, this.$slots.default) : h('div', data);
   }
 
   private _onReady(): void {
