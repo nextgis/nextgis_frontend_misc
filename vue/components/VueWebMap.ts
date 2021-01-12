@@ -7,7 +7,7 @@ import { TileJson } from '../../interfaces/TileJson';
 
 @Component({})
 export class VueWebMap<
-  WM extends WebMap = WebMap<any, any, any, any, any>,
+  WM extends WebMap = WebMap<any, any, any, any>,
   WMO extends MapOptions = MapOptions
 > extends Vue {
   @Prop({ type: Object }) tileJson!: TileJson;
