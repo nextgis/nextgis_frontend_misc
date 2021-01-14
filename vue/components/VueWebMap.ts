@@ -13,6 +13,7 @@ export class VueWebMap<
   @Prop({ type: Boolean }) readonly fullFilling!: boolean;
   @Prop({ type: Object }) readonly mapAdapter!: MapAdapter;
   @Prop({ type: Object }) readonly mapOptions!: WMO;
+  @Prop({ type: Array }) readonly maxBounds!: LngLatBoundsArray;
   @Prop({ type: Array, default: () => [-179, -90, 180, 90] })
   readonly bounds!: LngLatBoundsArray;
   @Prop({ type: String }) readonly cursor!: Cursor;
