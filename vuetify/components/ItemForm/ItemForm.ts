@@ -34,7 +34,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   @Ref('ItemForm') readonly itemForm!: HTMLFormElement;
   @Model('change') readonly item!: I;
   @Prop() readonly meta!: ItemFormMeta;
-  @Prop({ type: Object }) readonly messages!: Messages;
+  @Prop({ type: Object, default: () => ({}) }) readonly messages!: Messages;
   @Prop({ type: Array, default: () => [] })
   readonly fields!: ItemFormField[];
   @Prop({ default: false }) readonly readonly!: boolean;
