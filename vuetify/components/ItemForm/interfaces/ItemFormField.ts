@@ -6,6 +6,10 @@ type Key = string | number | symbol;
 export type ItemFormMetaField<F extends Key = Key> = ItemFormField<F>;
 
 export type ItemFormField<F extends Key = Key> =
+  | ItemFormSingleField<F>
+  | ItemFormField<F>[];
+
+export type ItemFormSingleField<F extends Key = Key> =
   | ItemFormSimpleField<F>
   | ItemFormChoicesField<F>;
 

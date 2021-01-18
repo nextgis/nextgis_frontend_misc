@@ -14,9 +14,10 @@ import {
 } from 'vue-property-decorator';
 
 import { ItemFormMeta } from './interfaces/ItemFormMeta';
-import { ItemFormField } from './interfaces/ItemFormField';
+import { ItemFormField, ItemFormSingleField } from './interfaces/ItemFormField';
 import { settings } from './settings';
 import { Messages } from './interfaces/Messages';
+import { updateItemFormField } from './utils';
 
 // @ts-ignore
 // import DatetimePicker from 'vuetify-datetime-picker';
@@ -48,8 +49,26 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   localItem: Record<string, any> | null = null;
   valid = true;
 
-  get fields_(): ItemFormField[] {
-    return (this.fields.length ? this.fields : this.meta.fields) || [];
+  get fields_(): ItemFormSingleField[] {
+    const fields = this.fields.length ? this.fields : this.meta.fields || [];
+    const fields_: ItemFormSingleField[] = [];
+    updateItemFormField(fields, (x) => {
+      fields_.push(x);
+    });
+    return fields_;
+  }
+
+  get rows(): ItemFormField[][] {
+    const fields = this.fields.length ? this.fields : this.meta.fields || [];
+    const rows: ItemFormField[][] = [];
+    fields.forEach((x) => {
+      if (Array.isArray(x)) {
+        rows.push(x);
+      } else {
+        rows.push([x]);
+      }
+    });
+    return rows;
   }
 
   get messages_(): Messages {
@@ -85,12 +104,12 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     this.localItem = item;
   }
 
-  hasSlot(field: ItemFormField): boolean {
+  hasSlot(field: ItemFormSingleField): boolean {
     const name = 'field.' + String(field.name);
     return !!this.$slots[name] || !!this.$scopedSlots[name];
   }
 
-  getFieldProps(field: ItemFormField): ItemFormField {
+  getFieldProps(field: ItemFormSingleField): ItemFormField {
     const props = {
       dense: this.dense,
       outlined: this.outlined,
@@ -111,7 +130,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     return props;
   }
 
-  getFieldValue(field: ItemFormField): any {
+  getFieldValue(field: ItemFormSingleField): any {
     if (this.localItem) {
       const name = String(field.name);
       const value = this.localItem[name];
@@ -122,7 +141,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     }
   }
 
-  setFieldValue(f: ItemFormField, val: any): void {
+  setFieldValue(f: ItemFormSingleField, val: any): void {
     let valid = true;
     if (f.type === 'date' && typeof val === 'string') {
       // const appDate = formatToAppDate(val);
@@ -160,7 +179,10 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   //   });
   // }
 
-  private requiredRule(value: any, field: ItemFormField): string | boolean {
+  private requiredRule(
+    value: any,
+    field: ItemFormSingleField
+  ): string | boolean {
     return full(value) || `${this.messages_.enterFiled} ${field.label}`;
   }
 }
