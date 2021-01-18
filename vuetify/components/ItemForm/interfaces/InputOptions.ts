@@ -18,4 +18,5 @@ export interface InputOptions {
   appendIcon?: string;
   prependIcon?: string;
   rules?: FieldRule[];
+  class?: string;
 }
