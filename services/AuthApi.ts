@@ -57,7 +57,7 @@ export class AuthApi<UserInfo = Record<string, any>>
     });
   }
 
-  oAuth2Options(): Promise<unknown> {
+  oAuth2Options<T = unknown>(): Promise<T> {
     return this.http.request(this.urls.oAuth2Options, {
       method: 'GET',
       crossDomain: true,
