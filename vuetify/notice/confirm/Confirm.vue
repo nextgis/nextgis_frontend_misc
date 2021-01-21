@@ -15,7 +15,7 @@
       <v-card-text class="body-1 text-body-1 py-3" v-html="message" />
       <v-card-actions>
         <v-spacer />
-        <v-btn
+        <v-btn text
           v-if="Boolean(buttonFalseText)"
           :color="buttonFalseColor"
           :text="buttonFalseFlat"
@@ -77,7 +77,7 @@ export default {
     },
     buttonFalseColor: {
       type: String,
-      default: "grey",
+      default: "primary",
     },
     buttonFalseFlat: {
       type: Boolean,
@@ -85,7 +85,7 @@ export default {
     },
     buttonTrueFlat: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     color: {
       type: String,
