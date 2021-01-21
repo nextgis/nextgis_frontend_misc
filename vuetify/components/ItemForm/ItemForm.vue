@@ -3,6 +3,7 @@
     <v-row v-for="(cols, i) in rows" :key="i" class="my-0 py-0 item-form-row">
       <v-col
         v-for="f in cols"
+        :cols="f.cols"
         :key="f.name"
         v-bind:class="['my-0', 'py-0' ,'item-form-col',f.name, f.class ? f.class : '']"
       >

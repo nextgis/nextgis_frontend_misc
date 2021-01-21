@@ -20,4 +20,5 @@ export interface InputOptions {
   prependIcon?: string;
   rules?: FieldRule[];
   class?: string;
+  cols?: number;
 }
