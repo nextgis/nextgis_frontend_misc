@@ -1,10 +1,17 @@
 <template>
   <div class="page-header">
-    <slot name="left">
-      <h1 class="text-h1">{{title}}</h1>
-    </slot>  
+    <div class="page-header__left">
+      <slot name="left">
+        <div class="page-header__breadcrumbs mb-1">
+          <slot name="breadcrumbs"></slot>
+        </div>
+        <h1 class="text-h1">{{title}}</h1>
+      </slot> 
+    </div>   
     <v-spacer/>
-    <slot name="right"></slot>
+    <div class="page-header__left">
+      <slot name="right"></slot>
+    </div>  
   </div>  
 </template>
 
@@ -15,5 +22,9 @@
   .page-header{
     display: flex;
     align-items: center;
+
+    &__breadcrumbs a{
+      text-decoration: none;
+    }
   }
 </style>
