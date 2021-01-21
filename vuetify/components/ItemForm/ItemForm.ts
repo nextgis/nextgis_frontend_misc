@@ -120,7 +120,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     }
     // props.label =
     //   props.label !== undefined ? props.label : '' + String(props.name);
-    if (props.required) {
+    if (props.required && !props.readonly && !props.enabled) {
       if (props.label) {
         props.label = props.label + '*';
       }
