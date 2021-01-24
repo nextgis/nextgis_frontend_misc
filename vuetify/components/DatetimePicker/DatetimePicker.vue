@@ -4,6 +4,7 @@
     <template v-slot:activator="{ on }">
       <v-text-field
         v-bind="textFieldProps"
+        append-icon="mdi-calendar"
         :disabled="disabled"
         :loading="loading"
         :label="label"
@@ -59,10 +60,10 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="actions" :parent="this">
-          <v-btn color="grey lighten-1" text @click.native="clearHandler">{{
+          <v-btn color="primary" text @click.native="clearHandler">{{
             clearText
           }}</v-btn>
-          <v-btn color="green darken-1" text @click="okHandler">{{
+          <v-btn color="primary" @click="okHandler">{{
             okText
           }}</v-btn>
         </slot>
