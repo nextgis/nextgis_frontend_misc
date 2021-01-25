@@ -9,7 +9,7 @@
       </slot> 
     </div>   
     <v-spacer/>
-    <div class="page-header__left">
+    <div class="page-header__right">
       <slot name="right"></slot>
     </div>  
   </div>  
@@ -25,6 +25,10 @@
 
     &__breadcrumbs a{
       text-decoration: none;
+    }
+
+    &__right{
+      text-align: right;
     }
   }
 </style>
