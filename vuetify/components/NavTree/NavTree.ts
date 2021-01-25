@@ -11,6 +11,7 @@ interface TreeItem {
   name: string;
   title: string;
   children?: TreeItem[];
+  order?: number;
 }
 
 @Component({
@@ -62,11 +63,21 @@ export default class NavTree extends Vue {
         }
       }
     });
+    console.log(items);
+    items = items.sort((a, b) => {
+      const orderA = a.order || 0;
+      const orderB = b.order || 0;
+      return orderA - orderB;
+    });
     return items;
   }
 
   private createTreeItem(route: RouteConfig): TreeItem | undefined {
     if (route.meta) {
+      while (route.children && this.showingChildNumber(route) === 1) {
+        route = route.children[0];
+      }
+
       const treeItem: TreeItem = {
         id: route.name || String(ID++),
         path: route.path,
@@ -76,6 +87,9 @@ export default class NavTree extends Vue {
       };
       if (route.children && route.children.length) {
         treeItem.children = this.createTreeItems(route.children);
+      }
+      if (route.meta && route.meta.order) {
+        treeItem.order = route.meta.order;
       }
       return treeItem;
     }
