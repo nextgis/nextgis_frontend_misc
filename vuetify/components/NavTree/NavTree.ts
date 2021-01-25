@@ -54,7 +54,7 @@ export default class NavTree extends Vue {
   }
 
   private createTreeItems(routes: RouteConfig[]): TreeItem[] {
-    const items: TreeItem[] = [];
+    let items: TreeItem[] = [];
     routes.forEach((x) => {
       if ((x.meta && x.meta.title && !x.meta.hidden) || x.children) {
         const item = this.createTreeItem(this.theOnlyOneChild(x) || x);
@@ -63,7 +63,6 @@ export default class NavTree extends Vue {
         }
       }
     });
-    console.log(items);
     items = items.sort((a, b) => {
       const orderA = a.order || 0;
       const orderB = b.order || 0;
