@@ -32,7 +32,7 @@ export default class DatetimePicker extends Vue {
   })
   readonly dateFormat!: string;
   @Prop({
-    default: 'HH:mm',
+    default: DEFAULT_TIME_FORMAT,
   })
   readonly timeFormat!: string;
   @Prop({
