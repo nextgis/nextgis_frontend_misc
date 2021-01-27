@@ -61,12 +61,21 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   get rows(): ItemFormField[][] {
     const fields = this.fields.length ? this.fields : this.meta.fields || [];
     const rows: ItemFormField[][] = [];
-    fields.forEach((x) => {
-      if (Array.isArray(x)) {
-        rows.push(x);
-      } else {
-        rows.push([x]);
+    const item = this.localItem || this.item;
+    const filter = (f: ItemFormField): boolean => {
+      if (!Array.isArray(f) && f.test) {
+        return !!f.test(item);
       }
+      return true;
+    };
+    fields.forEach((x) => {
+      let cols: ItemFormField[] = [];
+      if (Array.isArray(x)) {
+        cols = x;
+      } else {
+        cols.push(x);
+      }
+      rows.push(cols.filter(filter));
     });
     return rows;
   }

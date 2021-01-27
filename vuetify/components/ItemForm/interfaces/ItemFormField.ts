@@ -17,6 +17,7 @@ export interface ItemFormSimpleField<F extends Key = Key> extends InputOptions {
   name: F;
   widget?: 'select' | 'textarea' | 'datetime' | string;
   type?: 'string' | 'boolean' | 'number' | 'date';
+  test?: (item: any) => boolean;
 }
 
 interface Choice {
