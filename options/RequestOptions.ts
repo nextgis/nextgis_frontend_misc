@@ -7,5 +7,6 @@ export interface RequestOptions {
   headers?: HeadersInit;
   file?: File;
   crossDomain?: boolean;
+  responseType?: XMLHttpRequestResponseType;
   onError?: (er: any) => void;
 }

@@ -41,7 +41,9 @@ export function request<T = any>(
         xhr.setRequestHeader(key, opt.headers[key]);
       }
     }
-
+    if (opt.responseType) {
+      xhr.responseType = opt.responseType;
+    }
     xhr.setRequestHeader('accept', 'application/json');
 
     onCancel(() => {

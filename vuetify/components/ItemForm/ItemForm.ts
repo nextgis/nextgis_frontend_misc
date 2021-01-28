@@ -17,7 +17,7 @@ import { ItemFormMeta } from './interfaces/ItemFormMeta';
 import { ItemFormField, ItemFormSingleField } from './interfaces/ItemFormField';
 import { settings } from './settings';
 import { Messages } from './interfaces/Messages';
-import { updateItemFormField } from './utils';
+import { eachItemFormField } from './utils';
 import { MESSAGES } from './Messages';
 import { FieldRule } from './interfaces/InputOptions';
 
@@ -52,16 +52,20 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   valid = true;
 
   get fields_(): ItemFormSingleField[] {
-    const fields = this.fields.length ? this.fields : this.meta.fields || [];
+    const fields = this.fields.length
+      ? this.fields
+      : (this.meta && this.meta.fields) || [] || [];
     const fields_: ItemFormSingleField[] = [];
-    updateItemFormField(fields, (x) => {
+    eachItemFormField(fields, (x) => {
       fields_.push(x);
     });
     return fields_;
   }
 
   get rows(): ItemFormField[][] {
-    const fields = this.fields.length ? this.fields : this.meta.fields || [];
+    const fields = this.fields.length
+      ? this.fields
+      : (this.meta && this.meta.fields) || [] || [];
     const rows: ItemFormField[][] = [];
     const item = this.localItem || this.item;
     const filter = (f: ItemFormField): boolean => {
@@ -113,6 +117,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   mounted(): void {
     const item: Record<string, any> = { ...this.item };
     this.localItem = item;
+    this.validate();
   }
 
   hasSlot(field: ItemFormSingleField): boolean {
@@ -134,16 +139,16 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
       if (props.label) {
         props.label = props.label + '*';
       }
-      rules.push((v: any) => this.requiredRule(v, field));
+      rules.push((v: any) => this.requiredRule(v));
     }
     if (field.type === 'number') {
       const min = 'min' in field ? field.min : undefined;
       const max = 'max' in field ? field.max : undefined;
       if (defined(min)) {
-        rules.push((v: number) => this.minRule(v, min, field));
+        rules.push((v: number) => this.minRule(v, min));
       }
       if (defined(max)) {
-        rules.push((v: number) => this.maxRule(v, max, field));
+        rules.push((v: number) => this.maxRule(v, max));
       }
     }
     props.rules = rules.concat(props.rules || []);
@@ -179,7 +184,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   }
 
   validate(): void {
-    this.itemForm.validate();
+    this.valid = this.itemForm.validate();
   }
   reset(): void {
     this.itemForm.reset();
@@ -188,40 +193,17 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     this.itemForm.resetValidation();
   }
 
-  // showPwd() {
-  //   if (this.passwordType === 'password') {
-  //     this.passwordType = '';
-  //   } else {
-  //     this.passwordType = 'password';
-  //   }
-  //   this.$nextTick(() => {
-  //     this.password.focus();
-  //   });
-  // }
-
-  private requiredRule(v: any, field: ItemFormSingleField): string | boolean {
-    return full(v) || `${this.messages_.enterFiled} ${field.label}`;
+  private requiredRule(v: any): string | boolean {
+    return full(v) || `${this.messages_.enterFiled}`;
   }
 
-  private minRule(
-    v: number,
-    min: number,
-    field: ItemFormSingleField
-  ): string | boolean {
-    return (
-      (defined(v) && v <= min) ||
-      `${field} ${this.messages_.shouldNotBeAbove} ${min}`
-    );
+  private minRule(v: number, min: number): string | boolean {
+    return (defined(v) && v >= min) || `${this.messages_.shouldBeAbove} ${min}`;
   }
 
-  private maxRule(
-    v: number,
-    max: number,
-    field: ItemFormSingleField
-  ): string | boolean {
+  private maxRule(v: number, max: number): string | boolean {
     return (
-      (defined(v) && v >= max) ||
-      `${field} ${this.messages_.shouldBeAbove} ${max}`
+      (defined(v) && v <= max) || `${this.messages_.shouldNotBeAbove} ${max}`
     );
   }
 }

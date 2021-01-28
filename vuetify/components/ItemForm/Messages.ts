@@ -1,8 +1,8 @@
 import { Messages } from './interfaces/Messages';
 
 export const MESSAGES: Messages = {
-  shouldNotBeAbove: 'should not be above',
-  shouldBeAbove: 'should be above',
+  shouldNotBeAbove: 'Should not be above',
+  shouldBeAbove: 'Should be above',
   enterFiled: 'Field is required',
   okText: 'Ok',
   clearText: 'Clear',
