@@ -53,6 +53,15 @@ export default class NavTree extends Vue {
     }
   }
 
+  getItemById(id: string): TreeItem {
+    return this.items.filter((x) => x.id === id)[0];
+  }
+
+  openRoute(activeItemIds: string[]): void {
+    const activatedItem: TreeItem = this.getItemById(activeItemIds[0]);
+    this.$router.push({ name: activatedItem.to });
+  }
+
   private createTreeItems(routes: RouteConfig[]): TreeItem[] {
     let items: TreeItem[] = [];
     routes.forEach((x) => {
