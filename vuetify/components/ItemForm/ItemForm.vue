@@ -20,7 +20,7 @@
           :key="f.name"
           :textFieldProps="getFieldProps(f)"
           :okText="messages_.okText"
-          :clearText="messages_.clear_text || 'Clear'"
+          :clearText="messages_.clear_text"
           v-model="item[f.name]"
           v-bind="getFieldProps(f)"
         ></DatetimePicker>

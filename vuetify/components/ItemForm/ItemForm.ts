@@ -1,6 +1,6 @@
 import { mdiCalendar } from '@mdi/js';
 import { VForm, VTextField } from 'vuetify/lib';
-import { full } from '@nextgis/utils';
+import { defined, full } from '@nextgis/utils';
 import DatetimePicker from '../DatetimePicker/DatetimePicker.vue';
 import PasswordField from '../PasswordField/PasswordField.vue';
 import {
@@ -18,6 +18,8 @@ import { ItemFormField, ItemFormSingleField } from './interfaces/ItemFormField';
 import { settings } from './settings';
 import { Messages } from './interfaces/Messages';
 import { updateItemFormField } from './utils';
+import { MESSAGES } from './Messages';
+import { FieldRule } from './interfaces/InputOptions';
 
 // @ts-ignore
 // import DatetimePicker from 'vuetify-datetime-picker';
@@ -35,7 +37,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   @Ref('ItemForm') readonly itemForm!: HTMLFormElement;
   @Model('change') readonly item!: I;
   @Prop() readonly meta!: ItemFormMeta;
-  @Prop({ type: Object, default: () => ({}) }) readonly messages!: Messages;
+  @Prop({ type: Object, default: () => MESSAGES }) readonly messages!: Messages;
   @Prop({ type: Array, default: () => [] })
   readonly fields!: ItemFormField[];
   @Prop({ default: false }) readonly readonly!: boolean;
@@ -127,15 +129,24 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     if (this.readonly) {
       props.readonly = this.readonly;
     }
-    // props.label =
-    //   props.label !== undefined ? props.label : '' + String(props.name);
+    const rules: FieldRule[] = [];
     if (props.required && !props.readonly && !props.enabled) {
       if (props.label) {
         props.label = props.label + '*';
       }
-      props.rules = props.rules || [];
-      props.rules.unshift((v: any) => this.requiredRule(v, field));
+      rules.push((v: any) => this.requiredRule(v, field));
     }
+    if (field.type === 'number') {
+      const min = 'min' in field ? field.min : undefined;
+      const max = 'max' in field ? field.max : undefined;
+      if (defined(min)) {
+        rules.push((v: number) => this.minRule(v, min, field));
+      }
+      if (defined(max)) {
+        rules.push((v: number) => this.maxRule(v, max, field));
+      }
+    }
+    props.rules = rules.concat(props.rules || []);
     return props;
   }
 
@@ -188,10 +199,29 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   //   });
   // }
 
-  private requiredRule(
-    value: any,
+  private requiredRule(v: any, field: ItemFormSingleField): string | boolean {
+    return full(v) || `${this.messages_.enterFiled} ${field.label}`;
+  }
+
+  private minRule(
+    v: number,
+    min: number,
     field: ItemFormSingleField
   ): string | boolean {
-    return full(value) || `${this.messages_.enterFiled} ${field.label}`;
+    return (
+      (defined(v) && v <= min) ||
+      `${field} ${this.messages_.shouldNotBeAbove} ${min}`
+    );
+  }
+
+  private maxRule(
+    v: number,
+    max: number,
+    field: ItemFormSingleField
+  ): string | boolean {
+    return (
+      (defined(v) && v >= max) ||
+      `${field} ${this.messages_.shouldBeAbove} ${max}`
+    );
   }
 }

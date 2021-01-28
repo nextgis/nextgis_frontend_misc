@@ -11,6 +11,7 @@ export type ItemFormField<F extends Key = Key> =
 
 export type ItemFormSingleField<F extends Key = Key> =
   | ItemFormSimpleField<F>
+  | ItemFormNumberField<F>
   | ItemFormChoicesField<F>;
 
 export interface ItemFormSimpleField<F extends Key = Key> extends InputOptions {
@@ -28,4 +29,11 @@ interface Choice {
 export interface ItemFormChoicesField<F extends Key = Key>
   extends ItemFormSimpleField<F> {
   choices?: Choice[];
+}
+
+export interface ItemFormNumberField<F extends Key = Key>
+  extends ItemFormSimpleField<F> {
+  type: 'number';
+  min?: number;
+  max?: number;
 }
