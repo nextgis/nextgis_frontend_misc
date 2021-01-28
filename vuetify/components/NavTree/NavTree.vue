@@ -1,9 +1,15 @@
 <template>
-  <v-treeview :items="items" :active="active" :open="open" activatable>
+  <v-treeview 
+    :items="items" 
+    :active="active" 
+    :open="open" 
+    activatable 
+    open-on-click
+    @update:active="openRoute">
     <template slot="label" slot-scope="{ item }">
-      <router-link :to="{ name: item.to }" v-if="item.to && !item.children">{{
+      <template v-if="item.to && !item.children">{{
         item.name
-      }}</router-link>
+      }}</template>
       <span v-else>{{ item.name }}</span>
     </template>
   </v-treeview>
