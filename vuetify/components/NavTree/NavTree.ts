@@ -22,6 +22,7 @@ interface TreeItem {
 })
 export default class NavTree extends Vue {
   @Prop({ default: () => [] }) readonly routes!: RouteConfig[];
+  @Prop({ default: () => true }) readonly requiredActive!: boolean;
 
   active: string[] = [];
   open: string[] = [];
@@ -57,9 +58,17 @@ export default class NavTree extends Vue {
     return this.items.filter((x) => x.id === id)[0];
   }
 
-  openRoute(activeItemIds: string[]): void {
-    const activatedItem: TreeItem = this.getItemById(activeItemIds[0]);
-    this.$router.push({ name: activatedItem.to });
+  onActiveItemsUpdated(activeItemIds: string[]): void {
+    if (!this.requiredActive || activeItemIds.length !== 0) {
+      const activatedItem: TreeItem = this.getItemById(activeItemIds[0]);
+      if (activatedItem.to !== this.$route.name) {
+        this.openRoute(activatedItem);
+      }
+    }
+  }
+
+  openRoute(activeItem: TreeItem): void {
+    this.$router.push({ name: activeItem.to });
   }
 
   private createTreeItems(routes: RouteConfig[]): TreeItem[] {

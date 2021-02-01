@@ -5,7 +5,7 @@
     :open="open" 
     activatable 
     open-on-click
-    @update:active="openRoute">
+    @update:active="onActiveItemsUpdated">
     <template slot="label" slot-scope="{ item }">
       <template v-if="item.to && !item.children">{{
         item.name
