@@ -118,6 +118,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
     const item: Record<string, any> = { ...this.item };
     this.localItem = item;
     this.validate();
+    this.resetValidation();
   }
 
   hasSlot(field: ItemFormSingleField): boolean {
