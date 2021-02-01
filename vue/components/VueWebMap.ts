@@ -90,8 +90,8 @@ export class VueWebMap<
     }
     this.webMap = new this._WebMap({
       mapAdapter: this.mapAdapter,
-      ...this.getMapOptions(),
       ...props,
+      ...this.getMapOptions(),
       target: this.$el as HTMLElement,
     }) as WM;
     this.webMap.onLoad().then(() => {
@@ -125,81 +125,3 @@ export class VueWebMap<
 }
 
 export default VueWebMap;
-
-// interface Methods {}
-// interface Computed {}
-// export interface VueWebMapProps extends MapOptions {
-//   mapAdapter: MapAdapter;
-//   fullFilling: boolean;
-//   // connector: NgwConnector;
-//   // baseUrl: string;
-//   // qmsId: string;
-//   // webMapId: string;
-//   mapOptions: MapOptions;
-// }
-
-// export interface VueWebMapData<M = any> {
-//   webMap: WebMap<M>;
-//   ready: boolean;
-// }
-
-// export const VueWebMap = Vue.extend<VueWebMapData, any, any, VueWebMapProps>({
-//   props: {
-//     mapAdapter: Object,
-//     fullFilling: Boolean,
-//     mapOptions: Object,
-//     controls: {
-//       type: Array,
-//       default: (): string[] => ['ZOOM', 'ATTRIBUTIONS'],
-//     },
-//   },
-
-//   data: () => {
-//     return {
-//       webMap: {} as WebMap,
-//       ready: false,
-//     };
-//   },
-
-//   created() {
-//     this._WebMap = WebMap;
-//   },
-
-//   mounted(): void {
-//     this.webMap = new this._WebMap({
-//       ...this.$props,
-//       ...this.$props.mapOptions,
-//       mapAdapter: this.$props.mapAdapter,
-//       target: this.$el as HTMLElement,
-//     });
-//     this.webMap.onLoad().then(() => {
-//       this.$nextTick().then(() => {
-//         this.ready = true;
-//         this.$emit('load', this.webMap);
-//       });
-//     });
-//   },
-//   beforeDestroy(): void {
-//     if (this.webMap) {
-//       this.webMap.destroy();
-//     }
-//   },
-//   render(h: CreateElement): VNode {
-//     const staticStyle: { [param: string]: string } = {
-//       zIndex: '0',
-//     };
-//     if (this.$props.fullFilling) {
-//       staticStyle.width = '100%';
-//       staticStyle.height = '100%';
-//     }
-
-//     const data: VNodeData = {
-//       staticClass: 'vue-ngw-map',
-//       staticStyle,
-//       // 'class': this.classes,
-//       attrs: { 'data-app': true },
-//       // domProps: { id: this.id }
-//     };
-//     return this.ready ? h('div', data, this.$slots.default) : h('div', data);
-//   },
-// });
