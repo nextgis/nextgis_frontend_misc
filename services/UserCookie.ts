@@ -24,7 +24,7 @@ export class UserCookie implements UserCookieInterface {
     return Cookies.get(this.localeKey) || '';
   }
 
-  setLocale(state: boolean): string | undefined {
+  setLocale(state: string): string | undefined {
     return Cookies.set(this.localeKey, String(state));
   }
 
