@@ -85,15 +85,17 @@ export class Trans {
   /**
    * Loads new translation messages and changes the language when finished
    */
-  changeLanguage(lang: string): Promise<any> {
-    localStorage.setItem('language', lang);
-    if (!this.isLangSupported(lang))
-      return Promise.reject(new Error('Language not supported'));
-    if (this._i18n.locale === lang) return Promise.resolve(lang); // has been loaded prior
-    return this.loadLanguageFile(lang).then((msgs) => {
-      this._i18n.setLocaleMessage(lang, msgs.default || msgs);
-      return this.setI18nLanguageInServices(lang);
-    });
+  async changeLanguage(lang: string): Promise<any> {
+    if (lang) {
+      localStorage.setItem('language', lang);
+      if (!this.isLangSupported(lang))
+        return Promise.reject(new Error('Language not supported'));
+      if (this._i18n.locale === lang) return Promise.resolve(lang); // has been loaded prior
+      return this.loadLanguageFile(lang).then((msgs) => {
+        this._i18n.setLocaleMessage(lang, msgs.default || msgs);
+        return this.setI18nLanguageInServices(lang);
+      });
+    }
   }
   /**
    * Async loads a translation file
