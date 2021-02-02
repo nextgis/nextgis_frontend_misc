@@ -1,12 +1,14 @@
 <template>
-  <v-main>
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-          <!-- <v-flex v-if="text" tag="h1" class="text-center headline pb-2">{{text}}</v-flex> -->
-          <v-progress-circular color="primary" indeterminate v-bind="$props"></v-progress-circular>
-      </v-layout>
-    </v-container>
-  </v-main>
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <!-- <v-flex v-if="text" tag="h1" class="text-center headline pb-2">{{text}}</v-flex> -->
+      <v-progress-circular
+        color="primary"
+        indeterminate
+        v-bind="$props"
+      ></v-progress-circular>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts" src="./PageLoading.ts">
