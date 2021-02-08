@@ -9,7 +9,7 @@ import VueNgwMap from '@nextgis/vue-ngw-leaflet';
 @Component({
   components: {},
 })
-export default class GeomInput extends Mixins(VueNgwMap) {
+export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   @Model('change') readonly geom!: MultiPolygon;
   @Prop({ default: true }) readonly enabled!: boolean;
 
