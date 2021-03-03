@@ -1,13 +1,11 @@
+import type { VueConstructor } from 'vue/types/umd';
 import { VueConstructor as Vue } from 'vue';
 import CancelablePromise from '@nextgis/cancelable-promise';
-// @ts-ignore
 import ConfirmComponent from './confirm/Confirm.vue';
-// @ts-ignore
 import NoticeComponent from './notice/Notice.vue';
-import { NoticeSetupOptions } from './NoticeSetupOptions';
-import { ConfirmOptions } from './confirm/ConfirmOptions';
-import { VueConstructor } from 'vue/types/umd';
-import { NoticeOptions } from './notice/NoticeOptions';
+import type { ConfirmOptions } from './confirm/ConfirmOptions';
+import type { NoticeSetupOptions } from './NoticeSetupOptions';
+import type { NoticeOptions } from './notice/NoticeOptions';
 
 export { NoticeOptions, ConfirmOptions, NoticeSetupOptions };
 

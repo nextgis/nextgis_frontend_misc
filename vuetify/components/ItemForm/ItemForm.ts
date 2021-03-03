@@ -1,8 +1,6 @@
 import { mdiCalendar } from '@mdi/js';
 import { VForm, VTextField } from 'vuetify/lib';
 import { defined, full } from '@nextgis/utils';
-import DatetimePicker from '../DatetimePicker/DatetimePicker.vue';
-import PasswordField from '../PasswordField/PasswordField.vue';
 import {
   Vue,
   Component,
@@ -13,13 +11,18 @@ import {
   Ref,
 } from 'vue-property-decorator';
 
-import { ItemFormMeta } from './interfaces/ItemFormMeta';
-import { ItemFormField, ItemFormSingleField } from './interfaces/ItemFormField';
+import DatetimePicker from '../DatetimePicker/DatetimePicker.vue';
+import PasswordField from '../PasswordField/PasswordField.vue';
+import type { ItemFormMeta } from './interfaces/ItemFormMeta';
+import type {
+  ItemFormField,
+  ItemFormSingleField,
+} from './interfaces/ItemFormField';
+import type { Messages } from './interfaces/Messages';
+import type { FieldRule } from './interfaces/InputOptions';
 import { settings } from './settings';
-import { Messages } from './interfaces/Messages';
 import { eachItemFormField } from './utils';
 import { MESSAGES } from './Messages';
-import { FieldRule } from './interfaces/InputOptions';
 
 // @ts-ignore
 // import DatetimePicker from 'vuetify-datetime-picker';

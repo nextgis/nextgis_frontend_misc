@@ -2,8 +2,8 @@ import { GeoJsonObject } from 'geojson';
 import Component from 'vue-class-component';
 import { Prop, Mixins, Watch, Emit, Model } from 'vue-property-decorator';
 
-import { Paint } from '@nextgis/paint';
-import {
+import type { Paint } from '@nextgis/paint';
+import type {
   LayerAdapters,
   LayerAdapter,
   VectorLayerAdapter,

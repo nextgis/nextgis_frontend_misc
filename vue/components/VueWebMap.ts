@@ -1,8 +1,9 @@
-import { VNode, VNodeData, CreateElement } from 'vue';
+import type { VNode, VNodeData, CreateElement } from 'vue';
 import { Prop, Vue, Watch } from 'vue-property-decorator';
 import Component from 'vue-class-component';
-import { MapAdapter, Cursor, MapOptions, WebMap } from '@nextgis/webmap';
-import { LngLatBoundsArray, TileJson, Type } from '@nextgis/utils';
+import { WebMap } from '@nextgis/webmap';
+import type { MapAdapter, Cursor, MapOptions } from '@nextgis/webmap';
+import type { LngLatBoundsArray, TileJson, Type } from '@nextgis/utils';
 
 @Component({})
 export class VueWebMap<

@@ -1,7 +1,7 @@
 import Vue, { VNode, CreateElement } from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
-import {
+import type {
   AdapterOptions,
   LayerAdapters,
   LayerAdapter,

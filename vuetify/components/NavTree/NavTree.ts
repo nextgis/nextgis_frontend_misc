@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { RouteConfig } from 'vue-router';
-import { Tree } from '@nextgis/tree';
+import { Tree, treeFind } from '@nextgis/tree';
 
 let ID = 0;
 
@@ -54,14 +54,15 @@ export default class NavTree extends Vue {
     }
   }
 
-  getItemById(id: string): TreeItem {
-    return this.items.filter((x) => x.id === id)[0];
+  getItemById(id: string): TreeItem | undefined {
+    const item = treeFind(this.items, (x) => x.id === id);
+    return item;
   }
 
   onActiveItemsUpdated(activeItemIds: string[]): void {
     if (!this.requiredActive || activeItemIds.length !== 0) {
-      const activatedItem: TreeItem = this.getItemById(activeItemIds[0]);
-      if (activatedItem.to !== this.$route.name) {
+      const activatedItem = this.getItemById(activeItemIds[0]);
+      if (activatedItem && activatedItem.to !== this.$route.name) {
         this.openRoute(activatedItem);
       }
     }
