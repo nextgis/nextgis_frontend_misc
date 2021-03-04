@@ -27,7 +27,7 @@
 
     <v-card>
       <v-card-text class="px-0 py-0">
-        <v-row class="pa-2">
+        <v-row class="ma-2">
           <v-col>
             <v-text-field
               v-model="dateInput"
