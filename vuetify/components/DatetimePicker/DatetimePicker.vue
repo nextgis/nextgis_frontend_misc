@@ -62,6 +62,7 @@
                   outlined
                   v-bind="attrs"
                   v-on="on"
+                  @input="timeMenu = false"
                 ></v-text-field>
               </template>
               <v-time-picker

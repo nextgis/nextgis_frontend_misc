@@ -90,7 +90,7 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   }
 
   get messages_(): Messages {
-    return this.messages || this.meta.messages || settings.messages;
+    return { ...this.meta.messages, ...this.messages, ...settings.messages };
   }
 
   @Watch('item')

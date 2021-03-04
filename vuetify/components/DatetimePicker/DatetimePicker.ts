@@ -2,6 +2,7 @@ import { Vue, Component, Model, Prop, Watch } from 'vue-property-decorator';
 
 import { format, parse, isMatch } from 'date-fns';
 import type { FieldRule } from '../ItemForm';
+import type { DatetimeMessages } from '../ItemForm/interfaces/Messages';
 
 const DEFAULT_DATE = '';
 const DEFAULT_TIME = '00:00:00';
@@ -9,7 +10,7 @@ const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd';
 const DEFAULT_TIME_FORMAT = 'HH:mm:ss'; // 'HH:mm:ss';
 const DEFAULT_DIALOG_WIDTH = 370;
 
-const LOCALE = {
+const LOCALE: DatetimeMessages = {
   clear: 'Clear',
   ok: 'OK',
   date: 'Date',
@@ -46,7 +47,7 @@ export default class DatetimePicker extends Vue {
   @Prop({
     default: () => LOCALE,
   })
-  readonly locale!: Record<string, string>;
+  readonly messages!: Record<string, string>;
   @Prop({
     type: Object,
   })
@@ -63,6 +64,7 @@ export default class DatetimePicker extends Vue {
   dateInput = DEFAULT_DATE;
   time = DEFAULT_TIME;
   timeInput = DEFAULT_TIME;
+  locale: Record<string, string> = {};
 
   get dateRules(): FieldRule[] {
     return [(v) => isMatch(v, this.dateFormat)];
@@ -155,6 +157,7 @@ export default class DatetimePicker extends Vue {
 
   mounted(): void {
     this.init();
+    this.locale = { ...LOCALE, ...this.messages } as Record<string, string>;
     this.locale.timePlaceholder =
       this.locale.timePlaceholder || this.timeFormat;
     this.locale.datePlaceholder =

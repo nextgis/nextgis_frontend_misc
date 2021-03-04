@@ -19,8 +19,7 @@
           v-else-if="f.widget && f.widget === 'datetime'"
           :key="f.name"
           :textFieldProps="getFieldProps(f)"
-          :okText="messages_.okText"
-          :clearText="messages_.clear_text"
+          :messages="messages_.datetime"
           v-model="item[f.name]"
           v-bind="getFieldProps(f)"
         ></DatetimePicker>
