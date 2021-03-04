@@ -1,14 +1,22 @@
-import { mdiCalendar, mdiClock } from '@mdi/js';
 import { Vue, Component, Model, Prop, Watch } from 'vue-property-decorator';
 
-import { format, parse } from 'date-fns';
+import { format, parse, isMatch } from 'date-fns';
+import type { FieldRule } from '../ItemForm';
+
 const DEFAULT_DATE = '';
 const DEFAULT_TIME = '00:00:00';
 const DEFAULT_DATE_FORMAT = 'yyyy-MM-dd';
-const DEFAULT_TIME_FORMAT = 'HH:mm:ss';
-const DEFAULT_DIALOG_WIDTH = 340;
-const DEFAULT_CLEAR_TEXT = 'CLEAR';
-const DEFAULT_OK_TEXT = 'OK';
+const DEFAULT_TIME_FORMAT = 'HH:mm:ss'; // 'HH:mm:ss';
+const DEFAULT_DIALOG_WIDTH = 370;
+
+const LOCALE = {
+  clear: 'Clear',
+  ok: 'OK',
+  date: 'Date',
+  time: 'Time',
+  timePlaceholder: DEFAULT_TIME_FORMAT,
+  datePlaceholder: DEFAULT_DATE_FORMAT,
+};
 
 @Component({
   components: {},
@@ -36,13 +44,9 @@ export default class DatetimePicker extends Vue {
   })
   readonly timeFormat!: string;
   @Prop({
-    default: DEFAULT_CLEAR_TEXT,
+    default: () => LOCALE,
   })
-  readonly clearText!: string;
-  @Prop({
-    default: DEFAULT_OK_TEXT,
-  })
-  readonly okText!: string;
+  readonly locale!: Record<string, string>;
   @Prop({
     type: Object,
   })
@@ -51,25 +55,28 @@ export default class DatetimePicker extends Vue {
     type: Object,
   })
   readonly datePickerProps!: Record<string, any>;
-  @Prop({
-    type: Object,
-  })
-  readonly timePickerProps!: Record<string, any>;
 
   display = false;
-  activeTab = 0;
+  timeMenu = false;
+
   date = DEFAULT_DATE;
+  dateInput = DEFAULT_DATE;
   time = DEFAULT_TIME;
-  icons = {
-    calendar: mdiCalendar,
-    time: mdiClock,
-  };
+  timeInput = DEFAULT_TIME;
+
+  get dateRules(): FieldRule[] {
+    return [(v) => isMatch(v, this.dateFormat)];
+  }
+
+  get timeRules(): FieldRule[] {
+    return [(v) => isMatch(v, this.timeFormat)];
+  }
 
   get dateTimeFormat(): string {
     return this.dateFormat + ' ' + this.timeFormat;
   }
   get defaultDateTimeFormat(): string {
-    return DEFAULT_DATE_FORMAT + ' ' + DEFAULT_TIME_FORMAT;
+    return this.dateFormat + ' ' + this.timeFormat;
   }
   get formattedDatetime(): string {
     return this.selectedDatetime
@@ -77,7 +84,7 @@ export default class DatetimePicker extends Vue {
       : '';
   }
   get selectedDatetime(): Date | null {
-    if (this.date && this.time) {
+    if (isMatch(this.date, this.dateFormat) && this.time) {
       let datetimeString = this.date + ' ' + this.time;
       if (this.time.length === 5) {
         datetimeString += ':00';
@@ -104,13 +111,54 @@ export default class DatetimePicker extends Vue {
       initDateTime = parse(this.datetime, this.dateTimeFormat, new Date());
     }
     if (initDateTime) {
-      this.date = format(initDateTime, DEFAULT_DATE_FORMAT);
-      this.time = format(initDateTime, DEFAULT_TIME_FORMAT);
+      this.date = format(initDateTime, this.dateFormat);
+      this.dateInput = this.date;
+      this.time = format(initDateTime, this.timeFormat);
+      this.timeInput = this.time;
+    }
+  }
+
+  @Watch('dateInput')
+  onDateInput() {
+    if (isMatch(this.dateInput, this.dateFormat)) {
+      this.date = this.dateInput;
+    } else {
+      this.date = '';
+    }
+  }
+
+  @Watch('timeInput')
+  onTimeInput() {
+    if (isMatch(this.timeInput, this.timeFormat)) {
+      this.time = this.timeInput;
+    } else {
+      this.time = DEFAULT_TIME;
+    }
+  }
+
+  @Watch('time')
+  onTime() {
+    if (this.time && this.time !== DEFAULT_TIME) {
+      if (this.time.length === 5) {
+        this.time += ':00';
+      }
+      this.timeInput = this.time;
+    }
+  }
+
+  @Watch('date')
+  onDate() {
+    if (this.date) {
+      this.dateInput = this.date;
     }
   }
 
   mounted(): void {
     this.init();
+    this.locale.timePlaceholder =
+      this.locale.timePlaceholder || this.timeFormat;
+    this.locale.datePlaceholder =
+      this.locale.datePlaceholder || this.dateFormat;
   }
 
   okHandler(): void {
@@ -120,17 +168,16 @@ export default class DatetimePicker extends Vue {
   clearHandler(): void {
     this.resetPicker();
     this.date = DEFAULT_DATE;
+    this.dateInput = this.date;
     this.time = DEFAULT_TIME;
+    this.timeInput = DEFAULT_TIME;
     this.$emit('input', null);
   }
   resetPicker(): void {
     this.display = false;
-    this.activeTab = 0;
+    this.timeMenu = false;
     if (this.$refs.timer) {
       (this.$refs.timer as any).selectingHour = true;
     }
-  }
-  showTimePicker(): void {
-    this.activeTab = 1;
   }
 }

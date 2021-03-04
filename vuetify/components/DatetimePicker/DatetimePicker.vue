@@ -9,7 +9,7 @@
         :loading="loading"
         :label="label"
         :value="formattedDatetime"
-        v-on="readonly ? undefined :on"
+        v-on="readonly ? undefined : on"
         readonly
       >
         <template v-slot:progress>
@@ -27,7 +27,73 @@
 
     <v-card>
       <v-card-text class="px-0 py-0">
-        <v-tabs fixed-tabs v-model="activeTab">
+        <v-row class="pa-2">
+          <v-col>
+            <v-text-field
+              v-model="dateInput"
+              :label="locale.date"
+              :rules="dateRules"
+              :placeholder="locale.datePlaceholder"
+              hide-details
+              dense
+              outlined
+            ></v-text-field>
+          </v-col>
+          <v-col>
+            <v-menu
+              ref="menu"
+              v-model="timeMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="time"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="timeInput"
+                  :label="locale.time"
+                  :rules="timeRules"
+                  :placeholder="locale.timePlaceholder"
+                  hide-details
+                  dense
+                  outlined
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                ref="timer"
+                v-if="timeMenu"
+                format="24hr"
+                v-model="time"
+                full-width
+                @click:minute="$refs.menu.save(time)"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+        </v-row>
+
+        <v-date-picker
+          v-model="date"
+          v-bind="datePickerProps"
+          full-width
+          no-title
+          scrollable
+        ></v-date-picker>
+        <!-- <v-text-field
+              v-model="dateFormatted"
+              label="Date"
+              hint="MM/DD/YYYY format"
+              persistent-hint
+              prepend-icon="mdi-calendar"
+              v-bind="attrs"
+              @blur="date = parseDate(dateFormatted)"
+
+            ></v-text-field> -->
+        <!-- <v-tabs fixed-tabs v-model="activeTab">
           <v-tab key="calendar">
             <slot name="dateIcon">
               <v-icon>{{ icons.calendar }}</v-icon>
@@ -55,17 +121,15 @@
               full-width
             ></v-time-picker>
           </v-tab-item>
-        </v-tabs>
+        </v-tabs> -->
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="actions" :parent="this">
           <v-btn color="primary" text @click.native="clearHandler">{{
-            clearText
+            locale.clear
           }}</v-btn>
-          <v-btn color="primary" @click="okHandler">{{
-            okText
-          }}</v-btn>
+          <v-btn color="primary" @click="okHandler">{{ locale.ok }}</v-btn>
         </slot>
       </v-card-actions>
     </v-card>
