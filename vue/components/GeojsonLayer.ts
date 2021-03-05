@@ -1,8 +1,8 @@
-import { GeoJsonObject } from 'geojson';
 import Component from 'vue-class-component';
 import { Prop, Mixins, Watch, Emit, Model } from 'vue-property-decorator';
+import { VueWebMapLayer } from './VueWebMapLayer';
 
-import type { Paint } from '@nextgis/paint';
+import type { GeoJsonObject } from 'geojson';
 import type {
   LayerAdapters,
   LayerAdapter,
@@ -10,7 +10,7 @@ import type {
   OnLayerClickOptions,
   VectorAdapterOptions,
 } from '@nextgis/webmap';
-import { VueWebMapLayer } from './VueWebMapLayer';
+import type { Paint } from '@nextgis/paint';
 
 @Component
 export class GeojsonLayer extends Mixins(VueWebMapLayer) {

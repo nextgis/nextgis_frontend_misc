@@ -7,7 +7,7 @@ import type { ConfirmOptions } from './confirm/ConfirmOptions';
 import type { NoticeSetupOptions } from './NoticeSetupOptions';
 import type { NoticeOptions } from './notice/NoticeOptions';
 
-export { NoticeOptions, ConfirmOptions, NoticeSetupOptions };
+export type { NoticeOptions, ConfirmOptions, NoticeSetupOptions };
 
 let createNoticeCmp: (
   Cmp: VueConstructor,
