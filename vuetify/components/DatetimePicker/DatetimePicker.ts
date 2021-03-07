@@ -67,11 +67,11 @@ export default class DatetimePicker extends Vue {
   locale: Record<string, string> = {};
 
   get dateRules(): FieldRule[] {
-    return [(v) => isMatch(v, this.dateFormat)];
+    return [(v) => !v || isMatch(v, this.dateFormat)];
   }
 
   get timeRules(): FieldRule[] {
-    return [(v) => isMatch(v, this.timeFormat)];
+    return [(v) => !v || isMatch(v, this.timeFormat)];
   }
 
   get dateTimeFormat(): string {
