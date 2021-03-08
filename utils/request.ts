@@ -17,9 +17,9 @@ export function request<T = any>(
       if ([200, 201, 204].indexOf(xhr.status) === -1) {
         try {
           const er = JSON.parse(xhr.response);
-          reject(er);
+          reject({ ...er, status: xhr.status });
         } catch {
-          reject('Server error');
+          reject({ message: 'Server error', status: xhr.status });
         }
       } else {
         let resp = xhr.response;
