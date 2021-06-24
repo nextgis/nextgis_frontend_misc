@@ -15,7 +15,7 @@
       <v-card-text class="body-1 text-body-1 py-3" v-html="message" />
       <v-card-actions>
         <v-spacer />
-        <v-btn text
+        <v-btn
           v-if="Boolean(buttonFalseText)"
           :color="buttonFalseColor"
           :text="buttonFalseFlat"
