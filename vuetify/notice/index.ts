@@ -3,42 +3,47 @@ import { VueConstructor as Vue } from 'vue';
 import CancelablePromise from '@nextgis/cancelable-promise';
 import ConfirmComponent from './confirm/Confirm.vue';
 import NoticeComponent from './notice/Notice.vue';
+import FormDialogComponent from './formDialog/FormDialog.vue';
 import type { ConfirmOptions } from './confirm/ConfirmOptions';
 import type { NoticeSetupOptions } from './NoticeSetupOptions';
 import type { NoticeOptions } from './notice/NoticeOptions';
+import type { FormDialogOptions } from './formDialog/FormDialogOptions';
 
 export type { NoticeOptions, ConfirmOptions, NoticeSetupOptions };
 
 let createNoticeCmp: (
   Cmp: VueConstructor,
-  options: Record<string, any>
-) => CancelablePromise<boolean>;
+  options: Record<string, any>,
+) => CancelablePromise<any>;
 
 let Confirm: VueConstructor;
 let Notice: VueConstructor;
+let Form: VueConstructor;
 
 const confirmProperty = '$confirmDialog';
 const noticeProperty = '$notice';
+const formProperty = '$formDialog';
 let noticeOptions: Partial<NoticeSetupOptions>;
 
 export function NoticeSetup(
   Vue: Vue,
-  installOptions: NoticeSetupOptions
+  installOptions: NoticeSetupOptions,
 ): void {
   noticeOptions = { ...installOptions };
   const vuetify = noticeOptions.vuetify;
   delete noticeOptions.vuetify;
   if (!vuetify) {
     console.warn(
-      'Module vuetify-notice needs vuetify instance. Use Vue.use(NoticeSetup, { vuetify })'
+      'Module vuetify-notice needs vuetify instance. Use Vue.use(NoticeSetup, { vuetify })',
     );
   }
   Confirm = Vue.extend(Object.assign({ vuetify }, ConfirmComponent));
   Notice = Vue.extend(Object.assign({ vuetify }, NoticeComponent));
+  Form = Vue.extend(Object.assign({ vuetify }, FormDialogComponent));
 
   createNoticeCmp = (
     Cmp: VueConstructor,
-    opt: Record<string, any>
+    opt: Record<string, any>,
   ): CancelablePromise<boolean> => {
     const container =
       document.querySelector('[data-app=true]') || document.body;
@@ -47,7 +52,7 @@ export function NoticeSetup(
         propsData: Object.assign(
           {},
           // Vue.prototype[confirmProperty].options,
-          opt
+          opt,
         ),
         destroyed: (): void => {
           container.removeChild(cmp.$el);
@@ -62,6 +67,7 @@ export function NoticeSetup(
   };
   Vue.prototype[confirmProperty] = confirmDialog;
   Vue.prototype[noticeProperty] = notice;
+  Vue.prototype[formProperty] = formDialog;
   // Vue.prototype[confirmProperty].options = options || {};
 }
 
@@ -79,7 +85,7 @@ function getOptions<T>(name: keyof NoticeSetupOptions): T {
 
 export function confirmDialog(
   msgOrOpt: string | ConfirmOptions,
-  options: ConfirmOptions = {}
+  options: ConfirmOptions = {},
 ): CancelablePromise<boolean> {
   if (typeof msgOrOpt === 'string') {
     options.message = msgOrOpt;
@@ -96,10 +102,24 @@ export function confirmDialog(
   }
 }
 
+export function formDialog<I = Record<string, any>>(
+  options = {} as FormDialogOptions<I>,
+): CancelablePromise<I> {
+  if (createNoticeCmp) {
+    return createNoticeCmp(Form, {
+      ...getOptions<FormDialogOptions<I>>('formDialog'),
+      ...options,
+    });
+  } else {
+    throw Error('FormDialog is not installed yet');
+  }
+}
+
 let noticePromise: CancelablePromise<boolean>;
+
 export function notice(
   msgOrOpt: string | NoticeOptions,
-  options: NoticeOptions = {}
+  options: NoticeOptions = {},
 ): CancelablePromise<boolean> {
   if (typeof msgOrOpt === 'string') {
     options.message = msgOrOpt;
@@ -124,11 +144,11 @@ declare module 'vue/types/vue' {
   export interface Vue {
     $notice: (
       message: string,
-      options: ConfirmOptions
+      options: ConfirmOptions,
     ) => CancelablePromise<boolean>;
     $confirmDialog: (
       message: string,
-      options: ConfirmOptions
+      options: ConfirmOptions,
     ) => CancelablePromise<boolean>;
   }
 }
