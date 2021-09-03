@@ -35,7 +35,7 @@ export default class NavTree extends Vue {
     const route = this.$route;
     const { meta, path } = route;
     // if set path, the sidebar will highlight the path you set
-    if (meta.activeMenu) {
+    if (meta && meta.activeMenu) {
       return meta.activeMenu;
     }
     return path;
@@ -91,7 +91,8 @@ export default class NavTree extends Vue {
   }
 
   private createTreeItem(route: RouteConfig): TreeItem | undefined {
-    if (route.meta) {
+    const meta = route.meta;
+    if (meta) {
       while (route.children && this.showingChildNumber(route) === 1) {
         route = route.children[0];
       }
@@ -100,8 +101,8 @@ export default class NavTree extends Vue {
         id: route.name || String(ID++),
         path: route.path,
         to: route.name,
-        name: '' + this.$t(route.meta.title),
-        title: route.meta.title,
+        name: '' + this.$t(meta.title),
+        title: meta.title,
       };
       if (route.children && route.children.length) {
         treeItem.children = this.createTreeItems(route.children);
