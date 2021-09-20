@@ -9,8 +9,9 @@ import {
 } from 'vue-property-decorator';
 
 import { deepmerge } from '@nextgis/utils';
-import { MapOptions } from '@nextgis/ngw-map';
 import VueNgwLeafletEditable from '../VueNgwLeafletEditable/VueNgwLeafletEditable';
+
+import type { MapOptions } from '@nextgis/ngw-map';
 
 const MAP_OPTIONS: MapOptions = {
   // qmsId: 2577,

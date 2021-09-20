@@ -13,14 +13,17 @@ export function request<T = any>(
     if (opt.crossDomain) {
       xhr.withCredentials = true;
     }
+    const handleError = () => {
+      try {
+        const er = JSON.parse(xhr.response);
+        reject({ ...er, status: xhr.status });
+      } catch {
+        reject({ message: 'Server error', status: xhr.status });
+      }
+    }
     xhr.onload = (): void => {
       if ([200, 201, 204].indexOf(xhr.status) === -1) {
-        try {
-          const er = JSON.parse(xhr.response);
-          reject({ ...er, status: xhr.status });
-        } catch {
-          reject({ message: 'Server error', status: xhr.status });
-        }
+        handleError();
       } else {
         let resp = xhr.response;
         if (xhr.response) {
@@ -33,8 +36,8 @@ export function request<T = any>(
         resolve(resp);
       }
     };
-    xhr.onerror = (er): void => {
-      reject(er);
+    xhr.onerror = (): void => {
+      handleError();
     };
     if (opt.headers) {
       for (const key in opt.headers) {

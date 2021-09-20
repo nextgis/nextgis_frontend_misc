@@ -42,27 +42,27 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   @Watch('geom')
   onGeom(): void {
-    if (!this.drawingInProgress) {
-      // this.stopEditing();
-      if (this.geom) {
-        const polygon = new GeoJSON(this.geom).getLayers()[0] as Path;
-        if (this.localGeom) {
-          this.replacePolygon(polygon);
-        } else {
-          this.stopEditing();
-          this._polygon = polygon;
-          if (this.enabled) {
-            this.startEditing();
-          } else {
-            this.addLayerToMap(this._polygon);
-          }
-        }
+    // if (!this.drawingInProgress) {
+    // this.stopEditing();
+    if (this.geom) {
+      const polygon = new GeoJSON(this.geom).getLayers()[0] as Path;
+      if (this.localGeom) {
+        this.replacePolygon(polygon);
       } else {
-        this.clearAll();
-        this.startEditing();
+        this.stopEditing();
+        this._polygon = polygon;
+        if (this.enabled) {
+          this.startEditing();
+        } else {
+          this.addLayerToMap(this._polygon);
+        }
       }
-      this.localGeom = this.geom;
+    } else {
+      this.clearAll();
+      this.startEditing();
     }
+    this.localGeom = JSON.parse(JSON.stringify(this.geom));
+    // }
   }
 
   getMapOptions(): NgwMapOptions {
@@ -111,18 +111,6 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
     }
   }
 
-  activatePolygonDrawing(): void {
-    const map = this._map;
-    if (map) {
-      if (this._polygon) {
-        this.addLayerToMap(this._polygon);
-      } else {
-        // @ts-ignore
-        map.editTools.startPolygon();
-      }
-    }
-  }
-
   addLayerToMap(layer: Path): void {
     const map = this._map;
     if (map) {
@@ -134,6 +122,18 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
         layer.enableEdit();
       }
       // this.setLayerReadyColor(layer);
+    }
+  }
+
+  activatePolygonDrawing(): void {
+    const map = this._map;
+    if (map && this.enabled) {
+      if (this._polygon) {
+        this.addLayerToMap(this._polygon);
+      } else {
+        // @ts-ignore
+        map.editTools.startPolygon();
+      }
     }
   }
 
