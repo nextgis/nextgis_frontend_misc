@@ -1,10 +1,13 @@
-import { MultiPolygon, Polygon } from 'geojson';
 import { Component, Model, Watch, Mixins, Prop } from 'vue-property-decorator';
-import { Map, GeoJSON, Layer, Path } from 'leaflet';
 import 'leaflet-editable';
-import { NgwMapOptions } from '@nextgis/ngw-map';
+import { GeoJSON } from 'leaflet';
 // @ts-ignore
 import VueNgwMap from '@nextgis/vue-ngw-leaflet';
+import { isObject } from '@nextgis/utils';
+
+import type { MultiPolygon, Polygon } from 'geojson';
+import type { Map, Layer, Path } from 'leaflet';
+import type { NgwMapOptions } from '@nextgis/ngw-map';
 
 @Component({
   components: {},
@@ -42,27 +45,31 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   @Watch('geom')
   onGeom(): void {
-    // if (!this.drawingInProgress) {
-    // this.stopEditing();
-    if (this.geom) {
-      const polygon = new GeoJSON(this.geom).getLayers()[0] as Path;
-      if (this.localGeom) {
-        this.replacePolygon(polygon);
-      } else {
-        this.stopEditing();
-        this._polygon = polygon;
-        if (this.enabled) {
-          this.startEditing();
+    if (!this.drawingInProgress) {
+      // this.stopEditing();
+      if (this.geom) {
+        const polygon = new GeoJSON(this.geom).getLayers()[0] as Path;
+        if (this.localGeom) {
+          this.replacePolygon(polygon);
         } else {
-          this.addLayerToMap(this._polygon);
+          this.stopEditing();
+          this._polygon = polygon;
+          if (this.enabled) {
+            this.startEditing();
+          } else {
+            this.addLayerToMap(this._polygon);
+          }
         }
+      } else {
+        this.clearAll();
+        this.startEditing();
       }
-    } else {
-      this.clearAll();
-      this.startEditing();
+      if (isObject(this.geom)) {
+        this.localGeom = JSON.parse(JSON.stringify(this.geom));
+      } else {
+        this.localGeom = this.geom;
+      }
     }
-    this.localGeom = JSON.parse(JSON.stringify(this.geom));
-    // }
   }
 
   getMapOptions(): NgwMapOptions {
@@ -127,7 +134,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   activatePolygonDrawing(): void {
     const map = this._map;
-    if (map && this.enabled) {
+    if (map) {
       if (this._polygon) {
         this.addLayerToMap(this._polygon);
       } else {
