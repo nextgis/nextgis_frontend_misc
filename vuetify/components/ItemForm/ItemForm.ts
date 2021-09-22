@@ -39,7 +39,7 @@ import { MESSAGES } from './Messages';
 export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   @Ref('ItemForm') readonly itemForm!: HTMLFormElement;
   @Model('change') readonly item!: I;
-  @Prop() readonly meta!: ItemFormMeta;
+  @Prop({ required: false, type: Object }) readonly meta?: ItemFormMeta;
   @Prop({ type: Object, default: () => MESSAGES }) readonly messages!: Messages;
   @Prop({ type: Array, default: () => [] })
   readonly fields!: ItemFormField[];
@@ -90,7 +90,11 @@ export default class ItemFormMixin<I = Record<string, any>> extends Vue {
   }
 
   get messages_(): Messages {
-    return { ...this.meta.messages, ...this.messages, ...settings.messages };
+    return {
+      ...(this.meta && this.meta.messages ? this.meta.messages : {}),
+      ...this.messages,
+      ...settings.messages,
+    };
   }
 
   @Watch('item')
