@@ -23,8 +23,9 @@
       :mapOptions="mapOptionsLocale"
       full-filling
       class="map"
+      @load="onMapLoad"
     >
-      <slot name="map"></slot>
+      <slot name="map" :ngwMapId="ngwMapId"></slot>
     </VueNgwLeafletEditable>
   </v-input>
 </template>

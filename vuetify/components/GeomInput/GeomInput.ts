@@ -11,7 +11,7 @@ import {
 import { deepmerge } from '@nextgis/utils';
 import VueNgwLeafletEditable from '../VueNgwLeafletEditable/VueNgwLeafletEditable';
 
-import type { MapOptions } from '@nextgis/ngw-map';
+import type { MapOptions, NgwMap } from '@nextgis/ngw-map';
 
 const MAP_OPTIONS: MapOptions = {
   // qmsId: 2577,
@@ -56,6 +56,7 @@ export default class GeomInput extends Vue {
 
   mapOptionsLocale: MapOptions | null = null;
   localGeom: Feature<MultiPolygon> | null = null;
+  ngwMapId: number | null = null;
 
   @Watch('geom')
   onGeomChange(geom: Feature<MultiPolygon>): Feature<MultiPolygon> {
@@ -75,5 +76,9 @@ export default class GeomInput extends Vue {
       ...deepmerge(MAP_OPTIONS, this.mapOptions),
       ...this.$props,
     };
+  }
+
+  onMapLoad(ngwMap: NgwMap) {
+    this.ngwMapId = ngwMap.id
   }
 }
