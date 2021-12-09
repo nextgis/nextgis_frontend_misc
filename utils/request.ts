@@ -2,13 +2,34 @@ import CancelablePromise from '@nextgis/cancelable-promise';
 import { isObject } from '@nextgis/utils';
 import { RequestOptions } from '../options/RequestOptions';
 
+function updateQueryStringParameter(
+  uri: string,
+  params: Record<string, string | number | boolean>,
+) {
+  for (const [key, value] of Object.entries(params)) {
+    const re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
+    const separator = uri.indexOf('?') !== -1 ? '&' : '?';
+    if (uri.match(re)) {
+      uri = uri.replace(re, '$1' + key + '=' + value + '$2');
+    } else {
+      uri = uri + separator + key + '=' + value;
+    }
+  }
+  return uri;
+}
+
 export function request<T = any>(
   url: string,
-  opt: RequestOptions = {}
+  opt: RequestOptions = {},
 ): CancelablePromise<T> {
   return new CancelablePromise<T>((resolve, reject, onCancel) => {
     const xhr = new XMLHttpRequest();
     const method = opt.method || 'GET';
+
+    if (opt.params) {
+      url = updateQueryStringParameter(url, opt.params);
+    }
+
     xhr.open(method, url, true);
     if (opt.crossDomain) {
       xhr.withCredentials = true;
@@ -20,7 +41,7 @@ export function request<T = any>(
       } catch {
         reject({ message: 'Server error', status: xhr.status });
       }
-    }
+    };
     xhr.onload = (): void => {
       if ([200, 201, 204].indexOf(xhr.status) === -1) {
         handleError();
