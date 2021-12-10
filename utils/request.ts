@@ -9,10 +9,11 @@ function updateQueryStringParameter(
   for (const [key, value] of Object.entries(params)) {
     const re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
     const separator = uri.indexOf('?') !== -1 ? '&' : '?';
+    const encodeValue = encodeURIComponent(value);
     if (uri.match(re)) {
-      uri = uri.replace(re, '$1' + key + '=' + value + '$2');
+      uri = uri.replace(re, '$1' + key + '=' + encodeValue + '$2');
     } else {
-      uri = uri + separator + key + '=' + value;
+      uri = uri + separator + key + '=' + encodeValue;
     }
   }
   return uri;
