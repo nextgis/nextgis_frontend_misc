@@ -134,7 +134,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   activatePolygonDrawing(): void {
     const map = this._map;
-    if (map) {
+    if (map && this.enabled) {
       if (this._polygon) {
         this.addLayerToMap(this._polygon);
       } else {
