@@ -134,10 +134,10 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   activatePolygonDrawing(): void {
     const map = this._map;
-    if (map && this.enabled) {
+    if (map) {
       if (this._polygon) {
         this.addLayerToMap(this._polygon);
-      } else {
+      } else if (this.enabled) {
         // @ts-ignore
         map.editTools.startPolygon();
       }
@@ -236,11 +236,11 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
     if (map) {
       // @ts-ignore
       const featuresLayer = map.editTools.featuresLayer;
-      Object.values(featuresLayer._layers as Path[]).forEach((layer) => {
+      for (const layer of Object.values(featuresLayer._layers as Path[])) {
         // @ts-ignore
         featuresLayer.removeLayer(layer);
         map.removeLayer(layer);
-      });
+      }
       this._polygon = null;
     }
     this._polygon = polygon;
@@ -293,14 +293,11 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   }
 
   private _onDrawingClick(e: any): void {
+    const className = e.originalEvent.target.className;
     // TODO: try to get status from native leaflet function, not from DOM
     if (
-      (' ' + e.originalEvent.target.className + ' ').indexOf(
-        ' leaflet-vertex-icon '
-      ) > -1 ||
-      (' ' + e.originalEvent.target.className + ' ').indexOf(
-        ' leaflet-popup-close-button '
-      ) > -1
+      (' ' + className + ' ').indexOf(' leaflet-vertex-icon ') > -1 ||
+      (' ' + className + ' ').indexOf(' leaflet-popup-close-button ') > -1
     ) {
       e.cancel();
     }
@@ -332,15 +329,10 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
     const map = this._map;
     if (map) {
       map.on('editable:drawing:end', this._onDrawingEnd, this);
-
       map.on('editable:drawing:clicked', this._onDrawingClicked, this);
-
       map.on('editable:drawing:click', this._onDrawingClick);
-
       map.on('editable:drawing:cancel', this._onDrawingCancel, this);
-
       map.on('editable:vertex:dragstart', this._onDrawingDragstart, this);
-
       map.on(
         'editable:drawing:end editable:vertex:dragend',
         this._onGeometryChange,
@@ -353,15 +345,10 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
     const map = this._map;
     if (map) {
       map.off('editable:drawing:end', this._onDrawingEnd, this);
-
       map.off('editable:drawing:clicked', this._onDrawingClicked, this);
-
       map.off('editable:drawing:click', this._onDrawingClick);
-
       map.off('editable:drawing:cancel', this._onDrawingCancel, this);
-
       map.off('editable:vertex:dragstart', this._onDrawingDragstart, this);
-
       map.off(
         'editable:drawing:end editable:vertex:dragend',
         this._onGeometryChange,
