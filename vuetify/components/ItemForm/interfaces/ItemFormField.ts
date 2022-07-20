@@ -12,12 +12,13 @@ export type ItemFormField<F extends Key = Key> =
 export type ItemFormSingleField<F extends Key = Key> =
   | ItemFormSimpleField<F>
   | ItemFormNumberField<F>
-  | ItemFormChoicesField<F>;
+  | ItemFormChoicesField<F>
+  | ItemFormFileField<F>;
 
 export interface ItemFormSimpleField<F extends Key = Key> extends InputOptions {
   name: F;
   widget?: 'select' | 'textarea' | 'datetime' | string;
-  type?: 'string' | 'boolean' | 'number' | 'date';
+  type?: 'string' | 'boolean' | 'number' | 'date' | 'file';
   test?: (item: any) => boolean;
 }
 
@@ -36,4 +37,9 @@ export interface ItemFormNumberField<F extends Key = Key>
   type: 'number';
   min?: number;
   max?: number;
+}
+export interface ItemFormFileField<F extends Key = Key>
+  extends ItemFormSimpleField<F> {
+  type: 'file';
+  accept?: string;
 }

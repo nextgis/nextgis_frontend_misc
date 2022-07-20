@@ -70,15 +70,18 @@ export default class GeomInput extends Vue {
     return this.localGeom;
   }
 
+  @Emit('load')
+  onMapLoad(ngwMap: NgwMap) {
+    this.ngwMapId = ngwMap.id;
+    return ngwMap;
+  }
+
   mounted(): void {
     this.localGeom = this.geom;
-    this.mapOptionsLocale = {
+    const mapOptionsLocale = {
       ...deepmerge(MAP_OPTIONS, this.mapOptions),
       ...this.$props,
     };
-  }
-
-  onMapLoad(ngwMap: NgwMap) {
-    this.ngwMapId = ngwMap.id
+    this.mapOptionsLocale = mapOptionsLocale;
   }
 }

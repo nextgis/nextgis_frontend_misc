@@ -5,7 +5,13 @@
         v-for="f in cols"
         :cols="f.cols"
         :key="f.name"
-        v-bind:class="['my-0', 'py-0' ,'item-form-col',f.name, f.class ? f.class : '']"
+        v-bind:class="[
+          'my-0',
+          'py-0',
+          'item-form-col',
+          f.name,
+          f.class ? f.class : '',
+        ]"
       >
         <slot
           v-if="hasSlot(f)"
@@ -36,6 +42,12 @@
           v-model="item[f.name]"
         >
         </v-checkbox>
+        <v-file-input
+          v-else-if="f.type === 'file'"
+          :key="f.name"
+          v-model="item[f.name]"
+          v-bind="getFieldProps(f)"
+        ></v-file-input>
         <v-select
           v-else-if="f.choices && f.widget && f.widget === 'select'"
           :key="f.name"

@@ -1,7 +1,6 @@
 import { Component, Model, Watch, Mixins, Prop } from 'vue-property-decorator';
 import 'leaflet-editable';
 import { GeoJSON } from 'leaflet';
-// @ts-ignore
 import VueNgwMap from '@nextgis/vue-ngw-leaflet';
 import { isObject } from '@nextgis/utils';
 
@@ -68,6 +67,10 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
         this.localGeom = JSON.parse(JSON.stringify(this.geom));
       } else {
         this.localGeom = this.geom;
+      }
+    } else {
+      if (!this.geom) {
+        this.clearAll();
       }
     }
   }
@@ -162,8 +165,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
     const map = this._map;
     if (ngwMap && map) {
       this.removeControl = ngwMap.createButtonControl({
-        html:
-          '<i aria-hidden="true" class="v-icon material-icons theme--light">D</i>',
+        html: '<i aria-hidden="true" class="v-icon material-icons theme--light">D</i>',
         onClick: () => {
           this.clearAll();
         },
@@ -336,7 +338,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
       map.on(
         'editable:drawing:end editable:vertex:dragend',
         this._onGeometryChange,
-        this
+        this,
       );
     }
   }
@@ -352,7 +354,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
       map.off(
         'editable:drawing:end editable:vertex:dragend',
         this._onGeometryChange,
-        this
+        this,
       );
     }
   }
