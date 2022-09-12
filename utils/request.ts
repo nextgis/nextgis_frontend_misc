@@ -71,6 +71,12 @@ export function request<T = any>(
     }
     xhr.setRequestHeader('accept', 'application/json');
 
+    if (opt.signal) {
+      opt.signal.addEventListener('abort', () => {
+        xhr.abort();
+      });
+    }
+
     onCancel(() => {
       xhr.abort();
     });

@@ -8,7 +8,7 @@ import type { LngLatBoundsArray, TileJson, Type } from '@nextgis/utils';
 @Component({})
 export class VueWebMap<
   WM extends WebMap = WebMap<any, any, any, any>,
-  WMO extends MapOptions = MapOptions
+  WMO extends MapOptions = MapOptions,
 > extends Vue {
   @Prop({ type: Object }) tileJson!: TileJson;
   @Prop({ type: Boolean }) readonly fullFilling!: boolean;

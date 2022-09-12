@@ -9,4 +9,5 @@ export interface RequestOptions {
   crossDomain?: boolean;
   responseType?: XMLHttpRequestResponseType;
   onError?: (er: any) => void;
+  signal?: AbortSignal;
 }

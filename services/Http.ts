@@ -25,7 +25,7 @@ export class Http {
 
   request<T = any>(
     url: string,
-    opt: RequestOptions = {}
+    opt: RequestOptions = {},
   ): CancelablePromise<T> {
     const headers = { ...this.getAuthorizationHeader(), ...opt.headers };
     return request(this.formatUrl(url), {
@@ -75,7 +75,7 @@ export class Http {
 
 export function createHttp(
   baseUrl?: string,
-  options?: DefaultRequestOptions
+  options?: DefaultRequestOptions,
 ): Http {
   return new Http(baseUrl, options);
 }
