@@ -67,7 +67,7 @@ export default {
     onEnterPressed(e) {
       if (e.keyCode === 13) {
         e.stopPropagation();
-        this.choose(true);
+        this.dismiss()
       }
     },
     dismiss() {

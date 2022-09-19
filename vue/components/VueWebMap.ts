@@ -83,12 +83,15 @@ export class VueWebMap<
 
   private _buildWebMap(): void {
     const props: Record<string, any> = {};
-    for (const p in this.$props) {
-      const prop = this.$props[p];
+
+    const attrs = { ...this.$props, ...this.$attrs };
+    for (const p in attrs) {
+      const prop = attrs[p];
       if (prop !== undefined) {
         props[p] = prop;
       }
     }
+
     this.webMap = new this._WebMap({
       mapAdapter: this.mapAdapter,
       ...props,
