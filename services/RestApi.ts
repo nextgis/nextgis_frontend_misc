@@ -44,7 +44,7 @@ export abstract class RestApi<T = Record<string, any>> {
 
   prepareUrl(
     url: string,
-    params: Record<string, number | string> = {}
+    params: Record<string, number | string> = {},
   ): string {
     if (this.urls[url]) {
       return template(this.urls[url], { ...params, name: this.name });
