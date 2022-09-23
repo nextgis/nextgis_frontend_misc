@@ -62,7 +62,7 @@ export abstract class RestApi<T = Record<string, any>> {
   getMany(params: Record<string, any> = {}): Promise<T[]> {
     return this.http.request(this.prepareUrl('getMany'), {
       method: 'GET',
-      crossDomain: true,
+      crossDomain: this.crossDomain,
       params,
     });
   }

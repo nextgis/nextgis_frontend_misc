@@ -1,7 +1,8 @@
-import { IconType } from '../IconType';
+import type { TranslateResult } from 'vue-i18n';
+import type { IconType } from '../IconType';
 
 export interface ConfirmOptions {
-  message?: string;
+  message?: string | TranslateResult;
   buttonTrueText?: string;
   buttonFalseText?: string;
   buttonTrueColor?: string;
