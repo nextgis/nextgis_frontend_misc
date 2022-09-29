@@ -1,6 +1,7 @@
-import { DeepPartial } from '@nextgis/utils';
 import { template } from '../utils/template';
-import { Http } from './Http';
+import type { DeepPartial } from '@nextgis/utils';
+import type { RequestOptions } from '../options/RequestOptions';
+import type { Http } from './Http';
 
 export interface RestApiOptions {
   http?: Http;
@@ -52,8 +53,9 @@ export abstract class RestApi<T = Record<string, any>> {
     return url;
   }
 
-  getOne(id: string | number): Promise<T> {
+  getOne(id: string | number, opt: RequestOptions = {}): Promise<T> {
     return this.http.request(this.prepareUrl('getOne', { id }), {
+      ...opt,
       method: 'GET',
       crossDomain: this.crossDomain,
     });

@@ -65,6 +65,10 @@ export class Http {
     });
   }
 
+  put<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
+    return this.patch(url, opt);
+  }
+
   patch<T = any>(url: string, opt?: RequestOptions): CancelablePromise<T> {
     return this.request(url, {
       ...opt,
