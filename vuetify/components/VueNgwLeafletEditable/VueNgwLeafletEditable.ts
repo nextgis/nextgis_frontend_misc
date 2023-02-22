@@ -22,8 +22,11 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   removeControl: any = null;
   errors: string[] = [];
 
-  private _map: Map | null = null;
-  private _polygon: Path | null = null;
+  private _polygon?: Path;
+
+  get _map(): Map | null {
+    return this.ngwMap?.mapAdapter.map || null;
+  }
 
   @Watch('enabled')
   onEnabledChange(): void {
@@ -84,7 +87,6 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   mounted(): void {
     this.ngwMap.onLoad().then((ngwMap) => {
       this.localGeom = this.geom;
-      this._map = ngwMap.mapAdapter.map || null;
       if (this.localGeom) {
         this.onGeom();
       }
@@ -129,7 +131,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
       layer.addTo(featuresLayer);
       if (this.enabled) {
         // @ts-ignore
-        layer.enableEdit();
+        // layer.enableEdit();
       }
       // this.setLayerReadyColor(layer);
     }
@@ -194,7 +196,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   }
 
   setPolygonData(layers: Path[]): void {
-    this._polygon = null;
+    this._polygon = undefined;
     this._polygon = Object.values(layers)[0];
   }
 
@@ -243,7 +245,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
         featuresLayer.removeLayer(layer);
         map.removeLayer(layer);
       }
-      this._polygon = null;
+      this._polygon = undefined;
     }
     this._polygon = polygon;
     this.activatePolygonDrawing();
@@ -259,7 +261,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
       }
       this.updateRemoveControl();
       this.onAreaChanged();
-      this._polygon = null;
+      this._polygon = undefined;
     }
   }
 
