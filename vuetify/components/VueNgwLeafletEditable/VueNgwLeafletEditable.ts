@@ -125,13 +125,14 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   addLayerToMap(layer: Path): void {
     const map = this._map;
-    if (map) {
-      // @ts-ignore
-      const featuresLayer = map.editTools.featuresLayer;
+    // @ts-ignore
+    const editTools = map && map.editTools;
+    if (editTools) {
+      const featuresLayer = editTools.featuresLayer;
       layer.addTo(featuresLayer);
       if (this.enabled) {
         // @ts-ignore
-        // layer.enableEdit();
+        layer.enableEdit();
       }
       // this.setLayerReadyColor(layer);
     }
