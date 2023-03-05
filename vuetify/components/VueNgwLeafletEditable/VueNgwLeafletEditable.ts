@@ -2,7 +2,7 @@ import { Component, Model, Watch, Mixins, Prop } from 'vue-property-decorator';
 import 'leaflet-editable';
 import { GeoJSON } from 'leaflet';
 import VueNgwMap from '@nextgis/vue-ngw-leaflet';
-import { isObject } from '@nextgis/utils';
+import { isObject, getCoordinates } from '@nextgis/utils';
 
 import type { MultiPolygon, Polygon } from 'geojson';
 import type { Map, Layer, Path } from 'leaflet';
@@ -125,14 +125,17 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
 
   addLayerToMap(layer: Path): void {
     const map = this._map;
-    // @ts-ignore
-    const editTools = map && map.editTools;
+    const editTools = map && (map as any).editTools;
     if (editTools) {
       const featuresLayer = editTools.featuresLayer;
       layer.addTo(featuresLayer);
-      if (this.enabled) {
-        // @ts-ignore
-        layer.enableEdit();
+      const coordinates = getCoordinates((layer as any).feature);
+      if (coordinates.length < 500) {
+        if (this.enabled) {
+          (layer as any).enableEdit();
+        }
+      } else {
+        console.log('Unable to edit a layer with more than 500 points');
       }
       // this.setLayerReadyColor(layer);
     }
@@ -144,8 +147,7 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
       if (this._polygon) {
         this.addLayerToMap(this._polygon);
       } else if (this.enabled) {
-        // @ts-ignore
-        map.editTools.startPolygon();
+        (map as any).editTools.startPolygon();
       }
     }
   }
@@ -153,11 +155,9 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   disablePolygonDrawing(): void {
     const map = this._map;
     if (map) {
-      // @ts-ignore
-      map.editTools.stopDrawing();
+      (map as any).editTools.stopDrawing();
       if (this._polygon) {
-        // @ts-ignore
-        this._polygon.disableEdit();
+        (this as any)._polygon.disableEdit();
         this._polygon.remove();
       }
     }
