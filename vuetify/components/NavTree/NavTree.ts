@@ -1,4 +1,4 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { RouteConfig } from 'vue-router';
 import { Tree, treeFind } from '@nextgis/tree';
 
@@ -27,9 +27,7 @@ export default class NavTree extends Vue {
   active: string[] = [];
   open: string[] = [];
 
-  get items(): TreeItem[] {
-    return this.createTreeItems(this.routes);
-  }
+  items: TreeItem[] = [];
 
   get activeMenu(): string {
     const route = this.$route;
@@ -41,22 +39,56 @@ export default class NavTree extends Vue {
     return path;
   }
 
-  created(): void {
-    const tree = new Tree({ children: [...this.items] });
-    const exist = tree.find((x) => x.id === this.$route.name);
-    if (exist) {
-      const parentIds = exist
-        .getParents()
-        .filter((x) => x.item.id)
-        .map((x) => x.item.id);
-      this.open = parentIds;
-      this.active = [exist.item.id];
+  @Watch('$route')
+  async setActiveRoute() {
+    let dynamicItems: Record<string, TreeItem[]> | undefined;
+    if (this.$route.meta) {
+      const hidden = this.$route.meta.hidden;
+      const navName = this.$route.meta.navName;
+      if (hidden && navName) {
+        this.active = [];
+        const tree = new Tree({ children: [...this.items] });
+        const exist = tree.find((x) => x.id === navName);
+        if (exist) {
+          // @ts-ignore
+          dynamicItems = { [navName]: [this.$route as RouteConfig] };
+          // @ts-ignore
+          await this.updateItems(dynamicItems);
+        }
+      }
+      await this.updateItems(dynamicItems);
+      this._setActive(this.$route.name);
     }
+  }
+
+  async created(): Promise<void> {
+    await this.updateItems();
+    this.setActiveRoute();
   }
 
   getItemById(id: string): TreeItem | undefined {
     const item = treeFind(this.items, (x) => x.id === id);
     return item;
+  }
+
+  async updateItems(dynamicItems?: Record<string, TreeItem[]>): Promise<void> {
+    const items = await this.createTreeItems(this.routes);
+
+    if (dynamicItems) {
+      for (const key in dynamicItems) {
+        const parent = items.find((x) => x.id === key);
+        if (parent) {
+          parent.children = parent.children || [];
+
+          for (const item of dynamicItems[key]) {
+            const treeItem = await this._routeToTreeItem(item);
+            parent.children.push(treeItem);
+          }
+        }
+      }
+    }
+
+    this.items = items;
   }
 
   onActiveItemsUpdated(activeItemIds: string[]): void {
@@ -72,16 +104,29 @@ export default class NavTree extends Vue {
     this.$router.push({ name: activeItem.to });
   }
 
-  private createTreeItems(routes: RouteConfig[]): TreeItem[] {
+  private _setActive(name: string | null | undefined) {
+    const tree = new Tree({ children: [...this.items] });
+    const exist = tree.find((x) => x.id === name);
+    if (exist) {
+      const parentIds = exist
+        .getParents()
+        .filter((x) => x.item.id)
+        .map((x) => x.item.id);
+      this.open = parentIds;
+      this.active = [exist.item.id];
+    }
+  }
+
+  private async createTreeItems(routes: RouteConfig[]): Promise<TreeItem[]> {
     let items: TreeItem[] = [];
-    routes.forEach((x) => {
+    for (const x of routes) {
       if ((x.meta && x.meta.title && !x.meta.hidden) || x.children) {
-        const item = this.createTreeItem(this.theOnlyOneChild(x) || x);
+        const item = await this.createTreeItem(this.theOnlyOneChild(x) || x);
         if (item) {
           items.push(item);
         }
       }
-    });
+    }
     items = items.sort((a, b) => {
       const orderA = a.order || 0;
       const orderB = b.order || 0;
@@ -90,28 +135,40 @@ export default class NavTree extends Vue {
     return items;
   }
 
-  private createTreeItem(route: RouteConfig): TreeItem | undefined {
+  private async createTreeItem(
+    route: RouteConfig,
+  ): Promise<TreeItem | undefined> {
     const meta = route.meta;
     if (meta) {
       while (route.children && this.showingChildNumber(route) === 1) {
         route = route.children[0];
       }
 
-      const treeItem: TreeItem = {
-        id: route.name || String(ID++),
-        path: route.path,
-        to: route.name,
-        name: '' + this.$t(meta.title),
-        title: meta.title,
-      };
-      if (route.children && route.children.length) {
-        treeItem.children = this.createTreeItems(route.children);
-      }
-      if (route.meta && route.meta.order) {
-        treeItem.order = route.meta.order;
-      }
-      return treeItem;
+      return this._routeToTreeItem(route);
     }
+  }
+
+  private async _routeToTreeItem(route: RouteConfig): Promise<TreeItem> {
+    const meta = route.meta || { title: '' };
+    let title = meta.title;
+    if (meta.getTitle) {
+      title = await meta.getTitle(route);
+    }
+
+    const treeItem: TreeItem = {
+      id: route.name || String(ID++),
+      path: route.path,
+      to: route.name,
+      name: '' + this.$t(title),
+      title: title,
+    };
+    if (route.children && route.children.length) {
+      treeItem.children = await this.createTreeItems(route.children);
+    }
+    if (route.meta && route.meta.order) {
+      treeItem.order = route.meta.order;
+    }
+    return treeItem;
   }
 
   private theOnlyOneChild(route: RouteConfig): RouteConfig | undefined {
