@@ -36,7 +36,7 @@ import { MESSAGES } from './Messages';
     PasswordField,
   },
 })
-export default class ItemFormMixin<I = Record<string, any>> extends Vue {
+export default class ItemFormMixin<I extends Record<string, any> = Record<string, any>> extends Vue {
   @Ref('ItemForm') readonly itemForm!: HTMLFormElement;
   @Model('change') readonly item!: I;
   @Prop({ required: false, type: Object }) readonly meta?: ItemFormMeta;
