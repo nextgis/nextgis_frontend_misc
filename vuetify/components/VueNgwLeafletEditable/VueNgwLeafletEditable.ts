@@ -225,10 +225,10 @@ export default class VueNgwLeafletEditable extends Mixins(VueNgwMap) {
   }
 
   updateRemoveControl(): void {
-    const featureLayers: any[] = this._map
-      ? // @ts-ignore
-        this._map.editTools.featuresLayer._layers
-      : [];
+    const editTools = this._map && (this._map as any).editTools;
+    const editToolsLayers = editTools && editTools.featuresLayer._layers;
+
+    const featureLayers: any[] = editToolsLayers || [];
     if (Object.keys(featureLayers).length > 0) {
       this.showRemoveControl();
     } else {
