@@ -154,7 +154,12 @@ export default class ItemFormMixin<I extends Record<string, any> = Record<string
       const min = 'min' in field ? field.min : undefined;
       const max = 'max' in field ? field.max : undefined;
       if (defined(min)) {
-        rules.push((v: number) => this.minRule(v, min));
+        const cb = (v: number) => {
+          const minV = this.minRule(v, min);
+          console.log(v, minV, defined(v));
+          return minV;
+        };
+        rules.push(cb);
       }
       if (defined(max)) {
         rules.push((v: number) => this.maxRule(v, max));
@@ -207,12 +212,10 @@ export default class ItemFormMixin<I extends Record<string, any> = Record<string
   }
 
   private minRule(v: number, min: number): string | boolean {
-    return (defined(v) && v >= min) || `${this.messages_.shouldBeAbove} ${min}`;
+    return defined(v) ? (v >= min || `${this.messages_.shouldBeAbove} ${min}`) : true;
   }
 
   private maxRule(v: number, max: number): string | boolean {
-    return (
-      (defined(v) && v <= max) || `${this.messages_.shouldNotBeAbove} ${max}`
-    );
+    return defined(v) ? (v <= max || `${this.messages_.shouldNotBeAbove} ${max}`) : true;
   }
 }
