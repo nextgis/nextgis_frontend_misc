@@ -156,7 +156,6 @@ export default class ItemFormMixin<I extends Record<string, any> = Record<string
       if (defined(min)) {
         const cb = (v: number) => {
           const minV = this.minRule(v, min);
-          console.log(v, minV, defined(v));
           return minV;
         };
         rules.push(cb);
