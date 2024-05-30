@@ -1,7 +1,7 @@
 import { Component, Model, Watch, Mixins, Prop } from 'vue-property-decorator';
 import 'leaflet-editable';
 import { GeoJSON } from 'leaflet';
-import VueNgwMap from '@nextgis/vue-ngw-leaflet';
+import VueNgwMap from '@nextgis/vue2-ngw-leaflet';
 import { isObject, getCoordinates } from '@nextgis/utils';
 
 import type { MultiPolygon, Polygon } from 'geojson';

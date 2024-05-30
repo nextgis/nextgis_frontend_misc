@@ -6,10 +6,10 @@
     "fix": "eslint --fix --ext .ts src"
   },
   "dependencies": {
-    "@nextgis/cancelable-promise": "^1.0.0-alpha.7",
-    "@nextgis/geocoder": "^1.0.0-alpha.7",
-    "@nextgis/utils": "^1.0.0-alpha.7",
-    "@nextgis/vue-ngw-leaflet": "^1.0.0-alpha.7",
+    "@nextgis/cancelable-promise": "^2.1.0",
+    "@nextgis/geocoder": "^2.2.3",
+    "@nextgis/utils": "^2.2.3",
+    "@nextgis/vue2-ngw-leaflet": "^2.0.0",
     "@types/node": "^14.11.2",
     "core-js": "^3.6.5",
     "geojson": "^0.5.0",
